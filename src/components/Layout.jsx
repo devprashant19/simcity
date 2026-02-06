@@ -80,7 +80,7 @@ const Layout = ({ children }) => {
 
                         {mongoUser && (
                             <div className="hidden lg:block px-3 py-1 ml-4 rounded-full bg-white/5 border border-white/10 text-[10px] font-mono text-white/60 uppercase tracking-widest">
-                            {mongoUser.username}
+                                {mongoUser.username}
                             </div>
                         )}
                     </div>
@@ -115,8 +115,23 @@ const Layout = ({ children }) => {
                                 </span>
                             </Link>
 
-                            {/* Desktop Links (Removed as per request) */}
+                            {/* Desktop Links (Restored) */}
                             <div className="hidden md:flex items-center gap-1">
+                                <Link to="/game" className="p-2 text-white/60 hover:text-ochre hover:bg-white/5 rounded-lg transition-all" title="Game">
+                                    <User size={18} />
+                                </Link>
+                                <Link to="/leaderboard" className="p-2 text-white/60 hover:text-ochre hover:bg-white/5 rounded-lg transition-all" title="Leaderboard">
+                                    <Trophy size={18} />
+                                </Link>
+                                <Link to="/attack" className={`p-2 rounded-lg transition-all ${location.pathname === '/attack' ? 'text-red-500 bg-red-500/10' : 'text-white/60 hover:text-ochre hover:bg-white/5'}`} title="Attack">
+                                    <Sword size={18} />
+                                </Link>
+                                <Link to="/help" className={`p-2 rounded-lg transition-all ${location.pathname === '/help' ? 'text-green-500 bg-green-500/10' : 'text-white/60 hover:text-ochre hover:bg-white/5'}`} title="Help">
+                                    <Heart size={18} />
+                                </Link>
+                                <Link to="/shop" className={`p-2 rounded-lg transition-all ${location.pathname === '/shop' ? 'text-yellow-400 bg-yellow-400/10' : 'text-white/60 hover:text-ochre hover:bg-white/5'}`} title="Shop">
+                                    <Coins size={18} />
+                                </Link>
                                 <div className="h-6 w-px bg-white/10 mx-2"></div>
                                 <button
                                     onClick={handleLogout}
