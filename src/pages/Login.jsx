@@ -14,6 +14,12 @@ const Login = () => {
         e.preventDefault();
         try {
             setError('');
+
+            if (!email.endsWith('@nith.ac.in')) {
+                setError("Please enter a valid NITH email address");
+                return;
+            }
+
             setLoading(true);
             await login(email, password);
             navigate('/game');
