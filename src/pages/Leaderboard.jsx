@@ -11,7 +11,7 @@ const Leaderboard = () => {
     useEffect(() => {
         const fetchLeaderboard = async () => {
             try {
-                const res = await api.get('/leaderboard/infrastructure');
+                const res = await api.get(`/leaderboard/infrastructure?_t=${new Date().getTime()}`);
                 // The backend returns all users sorted by infrastructure
                 setUsers(res.data.leaderboard || []);
             } catch (err) {
