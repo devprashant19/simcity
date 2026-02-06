@@ -45,7 +45,7 @@ const Login = () => {
                 <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6 relative z-10">
                     <div className="space-y-2">
                         <label className="block text-xs font-bold text-ochre uppercase tracking-widest pl-1">
-                            Identity Link
+                            Email
                         </label>
                         <input
                             type="email"
@@ -82,7 +82,7 @@ const Login = () => {
 
                 <div className="mt-6 md:mt-8 text-center pt-6 border-t border-white/10 relative z-10">
                     <p className="text-xs md:text-sm font-medium text-white/40">
-                        New Citizen? <Link to="/register" className="text-ochre hover:text-white transition-colors ml-1 font-bold">Enlist Now</Link>
+                        New Citizen? <Link to="/register" className="text-ochre hover:text-white transition-colors ml-1 font-bold">Register Now</Link>
                     </p>
                 </div>
             </div>

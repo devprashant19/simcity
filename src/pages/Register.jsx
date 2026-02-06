@@ -11,7 +11,6 @@ const Register = () => {
     const [loading, setLoading] = useState(false);
     const { signup } = useAuth();
     const navigate = useNavigate();
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -37,8 +36,8 @@ const Register = () => {
                 <div className="absolute -top-20 -left-20 w-64 h-64 bg-ochre/20 blur-[100px] rounded-full pointer-events-none"></div>
 
                 <div className="mb-6 md:mb-10 text-center relative z-10">
-                    <h2 className="text-3xl md:text-4xl font-heading text-white mb-2 uppercase tracking-tighter text-glow">Enlistment</h2>
-                    <p className="text-xs md:text-sm font-bold text-white/50 uppercase tracking-widest">Join the Metro Network</p>
+                    <h2 className="text-3xl md:text-4xl font-heading text-white mb-2 uppercase tracking-tighter text-glow">Register</h2>
+                    <p className="text-xs md:text-sm font-bold text-white/50 uppercase tracking-widest">Join Now</p>
                 </div>
 
                 {error && (
@@ -72,7 +71,7 @@ const Register = () => {
 
                         <div className="space-y-2">
                             <label className="block text-xs font-bold text-ochre uppercase tracking-widest pl-1">
-                                Identity Link
+                                Email
                             </label>
                             <input
                                 type="email"
@@ -110,7 +109,7 @@ const Register = () => {
 
                 <div className="mt-6 md:mt-8 text-center pt-6 border-t border-white/10 relative z-10">
                     <p className="text-xs md:text-sm font-medium text-white/40">
-                        Already Citizen? <Link to="/login" className="text-ochre hover:text-white transition-colors ml-1 font-bold">Authenticate</Link>
+                        Already Citizen? <Link to="/login" className="text-ochre hover:text-white transition-colors ml-1 font-bold">Login</Link>
                     </p>
                 </div>
             </div>

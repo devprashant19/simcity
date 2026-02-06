@@ -44,9 +44,9 @@ const Shop = () => {
         setLoading(true);
 
         const payload = {
-            military: type === 'military' ? 1 : 0,
-            health: type === 'health' ? 1 : 0,
-            infrastructure: type === 'infrastructure' ? 1 : 0
+            military: type === 'military' ? COST_PER_POINT : 0,
+            health: type === 'health' ? COST_PER_POINT : 0,
+            infrastructure: type === 'infrastructure' ? COST_PER_POINT : 0
         };
 
         try {
@@ -123,7 +123,6 @@ const Shop = () => {
                     Convert your surplus <span className="text-yellow-400 font-bold">Economy</span> into strategic assets.
                     Rates are fixed but subject to unseen market forces.
                 </p>
-
                 <div className="mt-8 inline-flex flex-col items-center bg-black/40 border border-yellow-500/30 p-4 rounded-xl backdrop-blur-sm">
                     <span className="text-xs font-mono text-white/40 uppercase tracking-widest mb-1">Available Funds</span>
                     <div className="flex items-center gap-3 text-3xl font-heading text-yellow-400">
@@ -185,7 +184,7 @@ const Shop = () => {
                                 </div>
                                 <div className="flex justify-between items-center text-green-400 bg-green-500/10 p-2 rounded">
                                     <span>GAIN:</span>
-                                    <span className="font-bold">+1 {pendingUpgrade.toUpperCase()}</span>
+                                    <span className="font-bold">+5 {pendingUpgrade.toUpperCase()}</span>
                                 </div>
                             </div>
                         </div>
