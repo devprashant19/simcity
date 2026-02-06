@@ -13,6 +13,7 @@ import Attack from './pages/Attack';
 import Help from './pages/Help';
 import FactionSelect from './pages/FactionSelect';
 import Shop from './pages/Shop';
+import HowToPlay from './pages/HowToPlay';
 
 const ProtectedRoute = ({ children }) => {
   const { currentUser, mongoUser, loading } = useAuth();
@@ -104,6 +105,12 @@ function App() {
               <Route path="/shop" element={
                 <ProtectedRoute>
                   <Shop />
+                </ProtectedRoute>
+              } />
+
+              <Route path="/rules" element={
+                <ProtectedRoute>
+                  <HowToPlay />
                 </ProtectedRoute>
               } />
 

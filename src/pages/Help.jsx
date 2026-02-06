@@ -8,18 +8,32 @@ const Help = () => {
     const [targets, setTargets] = useState([]);
     const [loading, setLoading] = useState(true);
     const [status, setStatus] = useState('');
+    const [warEnabled, setWarEnabled] = useState(false); // War State
     const { mongoUser, fetchStats } = useAuth();
     const { power, setPower } = useGame(); // Get power and setter from context
 
     // Confirmation Modal State
     const [confirmTarget, setConfirmTarget] = useState(null);
 
-    // Fetch Targets with Polling (Similar to Attack.jsx)
+    // Fetch War Status & Targets with Polling
     useEffect(() => {
         let isMounted = true;
 
-        const fetchTargets = async () => {
+        const fetchData = async () => {
             try {
+                // 1. Check War Status
+                const warRes = await api.get('/war/status');
+                const isWarActive = warRes.data.warEnabled;
+
+                if (isMounted) setWarEnabled(isWarActive);
+
+                // If War is OFF, stop here
+                if (!isWarActive) {
+                    if (isMounted) setLoading(false);
+                    return;
+                }
+
+                // 2. Fetch Targets (Only if War is Active)
                 // Use /leaderboard/infrastructure for consistent target list
                 const res = await api.get('/leaderboard/infrastructure');
                 if (!isMounted) return;
@@ -30,15 +44,15 @@ const Help = () => {
                 const filtered = list.filter(u => u.id !== currentId && u._id !== currentId);
                 setTargets(filtered);
             } catch (err) {
-                console.error('Target acquisition failed:', err);
+                console.error('Data acquisition failed:', err);
             } finally {
                 if (isMounted) setLoading(false);
             }
         };
 
-        fetchTargets();
+        fetchData();
         // Poll every 5 seconds
-        const intervalId = setInterval(fetchTargets, 5000);
+        const intervalId = setInterval(fetchData, 5000);
 
         return () => {
             isMounted = false;
@@ -104,6 +118,25 @@ const Help = () => {
                     <div className="absolute inset-0 bg-green-500 animate-[loading_1.5s_infinite]"></div>
                 </div>
                 <p className="mt-6 text-xl font-black text-green-500 uppercase tracking-[0.5em]">Locating_Allies...</p>
+            </div>
+        );
+    }
+
+    // WAR ZONE INACTIVE STATE (Gates Aid too)
+    if (!warEnabled) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[calc(100vh-200px)] text-center px-4 animate-fade-in">
+                <div className="bg-black/50 border border-white/10 p-12 rounded-2xl backdrop-blur-md max-w-2xl w-full">
+                    <div className="mb-6 flex justify-center">
+                        <AlertTriangle size={80} className="text-white/20" />
+                    </div>
+                    <h2 className="text-4xl md:text-5xl font-heading text-white uppercase tracking-tighter text-glow mb-4">
+                        Aid Routes Closed
+                    </h2>
+                    <p className="text-white/40 font-mono uppercase tracking-widest text-sm md:text-base">
+                        Global Protocols dictate that Aid can only be dispatched during Active War Status.
+                    </p>
+                </div>
             </div>
         );
     }

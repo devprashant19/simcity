@@ -194,6 +194,39 @@ export const GameProvider = ({ children }) => {
             // 4. Update Power (Immediate Feedback)
             if (newPower) updatePower(newPower);
 
+            // 5. INJECT EFFECTS into the current question option so UI displays them
+            if (effects) {
+                setCurrentQuestion(prev => {
+                    if (!prev) return prev;
+
+                    // A. For Input Type (Attach to root)
+                    if (prev.type === 'input') {
+                        return { ...prev, effects: effects };
+                    }
+
+                    // B. For Options/Decision (Attach to specific option)
+                    if (prev.options) {
+                        const newOptions = [...prev.options];
+                        let targetIndex = -1;
+                        if (typeof payloadAnswer === 'number') {
+                            targetIndex = payloadAnswer;
+                        } else {
+                            targetIndex = newOptions.findIndex(o => o.text === answer);
+                        }
+
+                        if (targetIndex !== -1 && newOptions[targetIndex]) {
+                            newOptions[targetIndex] = {
+                                ...newOptions[targetIndex],
+                                effects: effects
+                            };
+                        }
+                        return { ...prev, options: newOptions };
+                    }
+
+                    return prev;
+                });
+            }
+
             return { success: true, message: message };
 
         } catch (err) {

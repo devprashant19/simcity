@@ -2,7 +2,7 @@ import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useGame } from '../contexts/GameContext'; // Import context
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Map, User, Trophy, Sword, LogOut, Coins, Shield, Activity, Anchor, Heart } from 'lucide-react';
+import { Map, User, Trophy, Sword, LogOut, Coins, Shield, Activity, Anchor, Heart, BookOpen } from 'lucide-react';
 
 const Layout = ({ children }) => {
     const { currentUser, mongoUser, logout } = useAuth();
@@ -71,12 +71,16 @@ const Layout = ({ children }) => {
                 <nav className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/10 h-16 flex items-center justify-between px-4 md:px-6">
                     <div className="flex items-center gap-3">
                         <Map size={20} className="text-ochre text-glow" />
-                        <h2 className="text-lg font-heading tracking-tighter text-white uppercase leading-none">
+                        <h2 className="text-lg font-heading tracking-tighter text-white uppercase leading-none hidden md:block">
                             SIMCITY<span className="text-ochre">2026</span>
                         </h2>
+                        <h2 className="text-lg font-heading tracking-tighter text-white uppercase leading-none md:hidden">
+                            SC<span className="text-ochre">26</span>
+                        </h2>
+
                         {mongoUser && (
-                            <div className="hidden sm:block px-3 py-1 ml-4 rounded-full bg-white/5 border border-white/10 text-[10px] font-mono text-white/60 uppercase tracking-widest">
-                                Cmdr. {mongoUser.username}
+                            <div className="hidden lg:block px-3 py-1 ml-4 rounded-full bg-white/5 border border-white/10 text-[10px] font-mono text-white/60 uppercase tracking-widest">
+                            {mongoUser.username}
                             </div>
                         )}
                     </div>
@@ -103,23 +107,16 @@ const Layout = ({ children }) => {
                                 </div>
                             )}
 
-                            {/* Desktop Links (Hidden on Mobile) */}
+                            {/* Rules Link (Moved here, Top Right) */}
+                            <Link to="/rules" className="flex items-center gap-2 px-3 py-1 bg-white/5 hover:bg-white/10 rounded-full text-blue-400 border border-white/5 transition-all group">
+                                <BookOpen size={16} />
+                                <span className="text-[10px] font-mono uppercase tracking-widest text-white/60 group-hover:text-white transition-colors">
+                                    HOW TO PLAY
+                                </span>
+                            </Link>
+
+                            {/* Desktop Links (Removed as per request) */}
                             <div className="hidden md:flex items-center gap-1">
-                                <Link to="/game" className="p-2 text-white/60 hover:text-ochre hover:bg-white/5 rounded-lg transition-all" title="Game">
-                                    <User size={18} />
-                                </Link>
-                                <Link to="/leaderboard" className="p-2 text-white/60 hover:text-ochre hover:bg-white/5 rounded-lg transition-all" title="Leaderboard">
-                                    <Trophy size={18} />
-                                </Link>
-                                <Link to="/attack" className={`p-2 rounded-lg transition-all ${location.pathname === '/attack' ? 'text-red-500 bg-red-500/10' : 'text-white/60 hover:text-ochre hover:bg-white/5'}`} title="Attack">
-                                    <Sword size={18} />
-                                </Link>
-                                <Link to="/help" className={`p-2 rounded-lg transition-all ${location.pathname === '/help' ? 'text-green-500 bg-green-500/10' : 'text-white/60 hover:text-ochre hover:bg-white/5'}`} title="Help">
-                                    <Heart size={18} />
-                                </Link>
-                                <Link to="/shop" className={`p-2 rounded-lg transition-all ${location.pathname === '/shop' ? 'text-yellow-400 bg-yellow-400/10' : 'text-white/60 hover:text-ochre hover:bg-white/5'}`} title="Shop">
-                                    <Coins size={18} />
-                                </Link>
                                 <div className="h-6 w-px bg-white/10 mx-2"></div>
                                 <button
                                     onClick={handleLogout}
@@ -142,10 +139,10 @@ const Layout = ({ children }) => {
             {!isHomePage && currentUser && mongoUser && (
                 <div className="fixed top-16 left-0 right-0 z-40 bg-black/60 backdrop-blur-md border-b border-white/10 shadow-lg animate-fade-in">
                     <div className="max-w-7xl mx-auto flex justify-between items-center px-2 md:px-4 overflow-x-auto no-scrollbar">
-                        <StatusBarItem icon={Coins} value={power.economy} color="text-yellow-400" label="Eco" />
-                        <StatusBarItem icon={Shield} value={power.military} color="text-red-500" label="Def" />
-                        <StatusBarItem icon={Activity} value={power.health} color="text-emerald-400" label="Hlth" />
-                        <StatusBarItem icon={Anchor} value={power.infrastructure} color="text-cyan-400" label="Infra" />
+                        <StatusBarItem icon={Coins} value={power.economy} color="text-yellow-400" label="Economy" />
+                        <StatusBarItem icon={Shield} value={power.military} color="text-red-500" label="Defense" />
+                        <StatusBarItem icon={Activity} value={power.health} color="text-emerald-400" label="Health" />
+                        <StatusBarItem icon={Anchor} value={power.infrastructure} color="text-cyan-400" label="Infrastructure" />
                     </div>
                 </div>
             )}
