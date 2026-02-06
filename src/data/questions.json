@@ -1,0 +1,247 @@
+{
+    "startQid": "Q1",
+    "questions": {
+        "Q1": {
+            "qid": "Q1",
+            "type": "decision",
+            "text": "What do you command your ninjas to do first?",
+            "options": [
+                {
+                    "text": "Establish a school",
+                    "effects": {
+                        "military": 1,
+                        "health": 1
+                    },
+                    "nextQid": "Q2"
+                },
+                {
+                    "text": "Use force through contract killings",
+                    "effects": {
+                        "economy": 1
+                    },
+                    "nextQid": "Q3"
+                }
+            ]
+        },
+        "Q2": {
+            "qid": "Q2",
+            "type": "decision",
+            "text": "How should students be trained daily?",
+            "options": [
+                {
+                    "text": "Balanced training",
+                    "effects": {
+                        "military": 2,
+                        "health": 2
+                    },
+                    "nextQid": "Q4"
+                },
+                {
+                    "text": "Extreme discipline",
+                    "effects": {
+                        "military": 3,
+                        "health": -1
+                    },
+                    "nextQid": "Q5"
+                }
+            ]
+        },
+        "Q3": {
+            "qid": "Q3",
+            "type": "decision",
+            "text": "Who should your ninjas target?",
+            "options": [
+                {
+                    "text": "Criminals and evil actors",
+                    "effects": {
+                        "military": 1
+                    },
+                    "nextQid": "Q6"
+                },
+                {
+                    "text": "Wealthy outsiders",
+                    "effects": {
+                        "economy": 3
+                    },
+                    "nextQid": "Q7"
+                }
+            ]
+        },
+        "Q4": {
+            "qid": "Q4",
+            "type": "input",
+            "text": "RIDDLE: A mage predicts rain perfectly but speaks only on dry days. He speaks today. Will it rain tomorrow?",
+            "correctAnswer": "Yes",
+            "effects": {
+                "economy": 1
+            },
+            "nextQid": "Q8"
+        },
+        "Q5": {
+            "qid": "Q5",
+            "type": "input",
+            "text": "RIDDLE: A spell doubles crops daily but halves soil fertility. When should the spell stop?",
+            "correctAnswer": "Day one",
+            "effects": {
+                "health": 1
+            },
+            "nextQid": "Q8"
+        },
+        "Q6": {
+            "qid": "Q6",
+            "type": "input",
+            "text": "RIDDLE: The Sacred Tree rewards cooperation. All villages defect slightly. What failed?",
+            "correctAnswer": "Cooperation",
+            "effects": {
+                "health": 1
+            },
+            "nextQid": "Q8"
+        },
+        "Q7": {
+            "qid": "Q7",
+            "type": "input",
+            "text": "RIDDLE: An elven road benefits all equally, yet only the wealthy gain. What failed?",
+            "correctAnswer": "Distribution",
+            "effects": {
+                "economy": 1
+            },
+            "nextQid": "Q8"
+        },
+        "Q8": {
+            "qid": "Q8",
+            "type": "input",
+            "text": "🧠 FINAL RIDDLE (ROUND 1): I grow when nothing is built, shrink when overbuilt, and vanish when built blindly.",
+            "correctAnswer": "Stability",
+            "effects": {
+                "military": 1,
+                "health": 1
+            },
+            "nextQid": "Q9"
+        },
+        "Q9": {
+            "qid": "Q9",
+            "type": "input",
+            "text": "🏆 ROUND 1 COMPLETE — Advance to Round 2",
+            "correctAnswer": "ANY",
+            "effects": {},
+            "nextQid": "Q10"
+        },
+        "Q10": {
+            "qid": "Q10",
+            "type": "input",
+            "text": "ROUND 2 RIDDLE: The kingdom grows rich but its people weaken. Which stat was ignored?",
+            "correctAnswer": "Health",
+            "effects": {
+                "health": 1
+            },
+            "nextQid": "Q11"
+        },
+        "Q11": {
+            "qid": "Q11",
+            "type": "input",
+            "text": "ROUND 2 RIDDLE: The army expands but fails to defend borders. What failed?",
+            "correctAnswer": "Training",
+            "effects": {
+                "military": 1
+            },
+            "nextQid": "Q12"
+        },
+        "Q12": {
+            "qid": "Q12",
+            "type": "input",
+            "text": "ROUND 2 RIDDLE: Trade flourishes but wealth pools among few. What should improve?",
+            "correctAnswer": "Economy",
+            "effects": {
+                "economy": 1
+            },
+            "nextQid": "Q13"
+        },
+        "Q13": {
+            "qid": "Q13",
+            "type": "input",
+            "text": "🏁 ROUND 2 COMPLETE — Prepare for Round 3",
+            "correctAnswer": "ANY",
+            "effects": {},
+            "nextQid": "Q14"
+        },
+        "Q14": {
+            "qid": "Q14",
+            "type": "input",
+            "text": "ROUND 3 RIDDLE: Peace lasts long but defenses decay. What danger approaches?",
+            "correctAnswer": "Invasion",
+            "effects": {
+                "military": 1
+            },
+            "nextQid": "Q15"
+        },
+        "Q15": {
+            "qid": "Q15",
+            "type": "input",
+            "text": "ROUND 3 RIDDLE: A powerful army drains the treasury. Which stat suffers?",
+            "correctAnswer": "Economy",
+            "effects": {
+                "economy": -1
+            },
+            "nextQid": "Q16"
+        },
+        "Q16": {
+            "qid": "Q16",
+            "type": "input",
+            "text": "ROUND 3 RIDDLE: Cities grow dense and disease spreads. What must improve?",
+            "correctAnswer": "Health",
+            "effects": {
+                "health": 1
+            },
+            "nextQid": "Q17"
+        },
+        "Q17": {
+            "qid": "Q17",
+            "type": "input",
+            "text": "🏛️ FINAL STAGE UNLOCKED — Kingdom Assessment Begins",
+            "correctAnswer": "ANY",
+            "effects": {},
+            "nextQid": "Q18"
+        },
+        "Q18": {
+            "qid": "Q18",
+            "type": "input",
+            "text": "FINAL QUESTION: What sustains a kingdom when growth must stop?",
+            "correctAnswer": "Balance",
+            "effects": {
+                "economy": 1,
+                "health": 1,
+                "military": 1
+            },
+            "nextQid": "Q19"
+        },
+        "Q19": {
+            "qid": "Q19",
+            "type": "input",
+            "text": "FINAL QUESTION: When should a ruler refuse expansion?",
+            "correctAnswer": "When stability is threatened",
+            "effects": {
+                "health": 1
+            },
+            "nextQid": "Q20"
+        },
+        "Q20": {
+            "qid": "Q20",
+            "type": "input",
+            "text": "FINAL QUESTION: What is the cost of endless conquest?",
+            "correctAnswer": "Collapse",
+            "effects": {
+                "military": -1
+            },
+            "nextQid": "Q21"
+        },
+        "Q21": {
+            "qid": "Q21",
+            "type": "input",
+            "text": "👑 YOU ARE DECLARED THE WINNER — KINGDOM PROMOTED",
+            "correctAnswer": "ANY",
+            "effects": {},
+            "isEnd": true,
+            "endType": "success"
+        }
+    }
+}
