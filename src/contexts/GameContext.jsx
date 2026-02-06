@@ -124,9 +124,9 @@ export const GameProvider = ({ children }) => {
     /**
      * Locks the answer and starts a timer.
      */
-    const lockWithTimer = (answer, seconds) => {
+    const lockWithTimer = (answer, minutes) => {
         setLockedAnswer(answer);
-        const duration = seconds * 1000;
+        const duration = minutes * 60 * 1000;
         setUnlockTime(Date.now() + duration);
     };
 
