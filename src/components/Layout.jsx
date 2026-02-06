@@ -80,7 +80,7 @@ const Layout = ({ children }) => {
 
                         {mongoUser && (
                             <div className="hidden lg:block px-3 py-1 ml-4 rounded-full bg-white/5 border border-white/10 text-[10px] font-mono text-white/60 uppercase tracking-widest">
-                            {mongoUser.username}
+                                {mongoUser.username}
                             </div>
                         )}
                     </div>
@@ -108,12 +108,28 @@ const Layout = ({ children }) => {
                             )}
 
                             {/* Rules Link (Moved here, Top Right) */}
-                            <Link to="/rules" className="flex items-center gap-2 px-3 py-1 bg-white/5 hover:bg-white/10 rounded-full text-blue-400 border border-white/5 transition-all group">
+                            <Link to="/rules" className={`flex items-center gap-2 px-3 py-1 ${location.pathname === '/rules' ? 'bg-ochre/20 border-ochre/40 text-ochre' : 'bg-white/5 border-white/5 text-blue-400'} hover:bg-white/10 rounded-full transition-all group border`}>
                                 <BookOpen size={16} />
                                 <span className="text-[10px] font-mono uppercase tracking-widest text-white/60 group-hover:text-white transition-colors">
                                     HOW TO PLAY
                                 </span>
                             </Link>
+
+                            {/* Desktop-only Quick Links */}
+                            <div className="hidden lg:flex items-center gap-2">
+                                <Link to="/attack" className={`flex items-center gap-2 px-3 py-1 rounded-full border transition-all group ${location.pathname === '/attack' ? 'bg-red-500/20 border-red-500/40 text-red-500' : 'bg-white/5 border-white/5 text-white/40 hover:bg-red-500/10 hover:text-red-500'}`}>
+                                    <Sword size={16} />
+                                </Link>
+                                <Link to="/help" className={`flex items-center gap-2 px-3 py-1 rounded-full border transition-all group ${location.pathname === '/help' ? 'bg-green-500/20 border-green-500/40 text-green-500' : 'bg-white/5 border-white/5 text-white/40 hover:bg-green-500/10 hover:text-green-500'}`}>
+                                    <Heart size={16} />
+                                </Link>
+                                <Link to="/leaderboard" className={`flex items-center gap-2 px-3 py-1 rounded-full border transition-all group ${location.pathname === '/leaderboard' ? 'bg-ochre/20 border-ochre/40 text-ochre' : 'bg-white/5 border-white/5 text-white/40 hover:bg-ochre/10 hover:text-ochre'}`}>
+                                    <Trophy size={16} />
+                                </Link>
+                                <Link to="/shop" className={`flex items-center gap-2 px-3 py-1 rounded-full border transition-all group ${location.pathname === '/shop' ? 'bg-yellow-400/20 border-yellow-400/40 text-yellow-400' : 'bg-white/5 border-white/5 text-white/40 hover:bg-yellow-400/10 hover:text-yellow-400'}`}>
+                                    <Coins size={16} />
+                                </Link>
+                            </div>
 
                             {/* Desktop Links (Removed as per request) */}
                             <div className="hidden md:flex items-center gap-1">
