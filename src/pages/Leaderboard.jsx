@@ -48,7 +48,7 @@ const Leaderboard = () => {
                         <tr>
                             <th className="p-6 text-sm font-black text-ochre uppercase tracking-wider">Rank</th>
                             <th className="p-6 text-sm font-black text-ochre uppercase tracking-wider">Citizen</th>
-                            <th className="p-6 text-sm font-black text-ochre uppercase tracking-wider text-right">Infrastructure</th>
+                            <th className="p-6 text-sm font-black text-ochre uppercase tracking-wider text-right">Total Power</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -70,7 +70,7 @@ const Leaderboard = () => {
                                         </div>
                                     </td>
                                     <td className="p-6 text-right">
-                                        <span className="text-2xl font-heading text-white">{user.infrastructure || 0}</span>
+                                        <span className="text-2xl font-heading text-white">{user.totalPower || 0}</span>
                                     </td>
                                 </tr>
                             ))}
