@@ -16,12 +16,10 @@ const Register = () => {
         try {
             setError('');
             setMessage('');
-
-            if (!email.endsWith('@nith.ac.in')) {
-                setError("Please enter a valid NITH email address");
-                return;
-            }
-
+            // if (!email.endsWith('@nith.ac.in')) {
+            //     setError("Please enter a valid NITH email address");
+            //     return;
+            // }
             setLoading(true);
             await signup(username, email, password);
             setMessage('Registration Successful. Verification email sent. Please check your inbox and verify before logging in.');
