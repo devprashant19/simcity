@@ -9,12 +9,33 @@ const Shop = () => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
 
+    // Modal State
+    const [showModal, setShowModal] = useState(false);
+    const [pendingUpgrade, setPendingUpgrade] = useState(null);
+
     const COST_PER_POINT = 5;
 
-    const handleBuy = async (type) => {
+    const initiateBuy = (type) => {
         setError('');
         setSuccess('');
+        if (power.economy < COST_PER_POINT) {
+            setError(`Insufficient Economy. Need ${COST_PER_POINT} Economy.`);
+            return;
+        }
+        setPendingUpgrade(type);
+        setShowModal(true);
+    };
 
+    const confirmBuy = () => {
+        if (pendingUpgrade) {
+            handleBuy(pendingUpgrade);
+            setShowModal(false);
+            setPendingUpgrade(null);
+        }
+    };
+
+    const handleBuy = async (type) => {
+        // Double check funds
         if (power.economy < COST_PER_POINT) {
             setError(`Insufficient Economy. Need ${COST_PER_POINT} Economy.`);
             return;
@@ -69,7 +90,7 @@ const Shop = () => {
                     </div>
 
                     <button
-                        onClick={() => handleBuy(type)}
+                        onClick={() => initiateBuy(type)}
                         disabled={loading || power.economy < COST_PER_POINT}
                         className={`w-full py-3 rounded-xl font-heading uppercase tracking-widest text-sm flex items-center justify-center gap-2 transition-all
                             ${loading ? 'bg-white/5 text-white/20' :
@@ -149,6 +170,42 @@ const Shop = () => {
                     label="Public Health"
                 />
             </div>
+
+            {/* CONFIRMATION MODAL */}
+            {showModal && pendingUpgrade && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm animate-fade-in">
+                    <div className="bg-black border border-ochre/50 p-8 rounded-2xl max-w-sm w-full mx-4 relative overflow-hidden shadow-[0_0_50px_rgba(223,158,31,0.3)]">
+                        <div className="mb-6 text-center">
+                            <ArrowUp size={48} className="mx-auto text-ochre mb-4 animate-bounce" />
+                            <h3 className="text-2xl font-heading text-white uppercase tracking-wider mb-2">Confirm Upgrade</h3>
+                            <div className="space-y-2 text-sm font-mono mt-4">
+                                <div className="flex justify-between items-center text-red-400 bg-red-500/10 p-2 rounded">
+                                    <span>COST:</span>
+                                    <span className="font-bold">-{COST_PER_POINT} Economy</span>
+                                </div>
+                                <div className="flex justify-between items-center text-green-400 bg-green-500/10 p-2 rounded">
+                                    <span>GAIN:</span>
+                                    <span className="font-bold">+1 {pendingUpgrade.toUpperCase()}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex gap-4">
+                            <button
+                                onClick={() => { setShowModal(false); setPendingUpgrade(null); }}
+                                className="flex-1 py-3 border border-white/20 hover:bg-white/10 rounded-lg text-white font-mono uppercase tracking-widest text-xs transition-all"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={confirmBuy}
+                                className="flex-1 py-3 bg-ochre hover:bg-ochre-light text-black font-bold rounded-lg font-heading uppercase tracking-widest text-sm transition-all shadow-[0_0_20px_rgba(223,158,31,0.4)]"
+                            >
+                                Purchase
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

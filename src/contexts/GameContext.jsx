@@ -62,6 +62,19 @@ export const GameProvider = ({ children }) => {
 
         // Ensure loading is set to false if no user, so we don't get stuck on spinner forever if auth fails/delays
         if (!userId) {
+            // RESET STATE ON LOGOUT
+            setPower({
+                economy: 10,
+                military: 10,
+                health: 10,
+                infrastructure: 10
+            });
+            setCurrentQuestionKey(null);
+            setFaction(null);
+            setGameOver(false);
+            setUnlockTime(null);
+            setLockedAnswer(null);
+
             setLoading(false);
             return;
         }
@@ -78,12 +91,19 @@ export const GameProvider = ({ children }) => {
                 const savedLockedAnswer = localStorage.getItem(`${storageKey}_lockedAnswer`);
 
                 if (savedUnlockTime) setUnlockTime(parseInt(savedUnlockTime, 10));
+                else setUnlockTime(null); // Explicit reset for new user
+
                 if (savedLockedAnswer) setLockedAnswer(savedLockedAnswer);
+                else setLockedAnswer(null); // Explicit reset for new user
 
                 // PRIORITIZE BACKEND DATA
                 // mongoUser is the source of truth if it has data
                 const backendFaction = mongoUser.faction;
                 const backendQIdx = mongoUser.currentQuestion;
+
+                console.log("[DEBUG] InitGame for User:", userId);
+                console.log("[DEBUG] MongoUser Faction:", backendFaction, "QIdx:", backendQIdx);
+                console.log("[DEBUG] Saved Local Faction:", savedFaction, "QIdx:", savedQIdx);
 
                 const effectiveFaction = backendFaction || savedFaction;
 
@@ -175,6 +195,7 @@ export const GameProvider = ({ children }) => {
             setPower(newPower);
 
             // Backend Sync
+            console.log("[DEBUG] Syncing Power:", newPower);
             await api.post('/point/update', newPower);
         } catch (err) {
             console.error("Failed to sync power stats", err);
@@ -197,7 +218,8 @@ export const GameProvider = ({ children }) => {
 
         // --- PREPARE LOGIC ---
         // Calc Next QID and Effects *before* checking phase, so we can use them in Phase 1 (Sync)
-        const isMCQ = (currentQuestion.type === 'decision' || currentQuestion.type === 'option');
+        console.log("[DEBUG] handleAnswer called with:", answer); // NEW LOG
+        const isMCQ = (currentQuestion.type === 'decision' || currentQuestion.type === 'option' || currentQuestion.type === 'outcome');
         let nextQid = currentQuestion.nextQid;
         let effects = {};
 
@@ -205,6 +227,8 @@ export const GameProvider = ({ children }) => {
             // Input Check logic
             const isCorrect = currentQuestion.correctAnswer === "ANY" ||
                 (currentQuestion.correctAnswer && answer.toLowerCase() === currentQuestion.correctAnswer.toLowerCase());
+
+            console.log("[DEBUG] Input Question. Correct?", isCorrect); // NEW LOG
 
             if (!isCorrect && !forceSubmit) {
                 // Only return false if we are in Phase 1 attempt
@@ -214,8 +238,10 @@ export const GameProvider = ({ children }) => {
             effects = currentQuestion.effects || {};
         } else if (isMCQ) {
             const selectedOption = currentQuestion.options.find(o => o.text === answer);
+            console.log("[DEBUG] Selected Option:", selectedOption); // NEW LOG
             if (selectedOption) {
                 effects = selectedOption.effects || {};
+                console.log("[DEBUG] Effects Found:", effects); // NEW LOG
                 if (selectedOption.nextQid) {
                     nextQid = selectedOption.nextQid;
                 }
@@ -251,15 +277,21 @@ export const GameProvider = ({ children }) => {
         // --- PHASE 2: PROCEED (Force Submit) ---
         // Triggered by "Proceed" button after timer
         if (forceSubmit) {
+            console.log("[DEBUG] Force Submit Triggered. NextQid:", nextQid); // NEW LOG
+
             // Backend is already updated. Just catch up Local State.
             setUnlockTime(null);
             setLockedAnswer(null);
 
             if (currentQuestion.isEnd) {
+                console.log("[DEBUG] Game Over"); // NEW LOG
                 setGameOver(true);
             } else if (nextQid) {
+                console.log("[DEBUG] Advancing to:", nextQid); // NEW LOG
                 setCurrentQuestionKey(nextQid);
                 // Note: We don't sync again here, mostly.
+            } else {
+                console.error("[ERROR] No Next QID found!"); // NEW LOG
             }
             return { success: true };
         }
