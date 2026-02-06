@@ -241,7 +241,7 @@ const Game = () => {
                                         <AlertTriangle size={48} className="mx-auto text-ochre mb-4 animate-pulse" />
                                         <h3 className="text-2xl font-heading text-white uppercase tracking-wider mb-2">Confirm Decision</h3>
                                         <p className="text-white/60 text-sm">
-                                            The action is irreversible. Protocols dictate a <strong>1-second cooldown</strong> after confirmation.
+                                            The action is irreversible. Protocols dictate a <strong>60-second cooldown</strong> after confirmation.
                                         </p>
                                     </div>
                                     <div className="flex gap-4">
@@ -282,7 +282,7 @@ const Game = () => {
                                                 <h3 className="text-xl font-heading text-green-400 uppercase tracking-widest mb-1">Access Granted</h3>
                                                 <p className="text-white/60 font-mono text-sm leading-relaxed mb-4">
                                                     Code accepted. System compiling results.<br />
-                                                    <strong>Cooldown Active: 1 Second</strong>
+                                                    <strong>Cooldown Active: 60 Seconds</strong>
                                                 </p>
                                                 {/* Show Effects for Input Question */}
                                                 {currentQuestion.effects && (
