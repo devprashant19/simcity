@@ -118,20 +118,28 @@ const Game = () => {
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-green-500 to-transparent opacity-50"></div>
                     <div className="absolute -top-20 -right-20 w-64 h-64 bg-green-500/10 blur-[100px] rounded-full pointer-events-none"></div>
 
-                    <h1 className="text-3xl md:text-5xl font-heading text-green-500 mb-6 uppercase tracking-tighter text-glow drop-shadow-md">
+                    <h1 className="text-3xl md:text-5xl font-heading text-green-500 mb-2 uppercase tracking-tighter text-glow drop-shadow-md">
                         CAMPAIGN COMPLETED
                     </h1>
+                    <p className="text-sm md:text-base font-mono text-green-500/60 uppercase tracking-[0.3em] mb-6">
+                        Thank you for participating
+                    </p>
 
                     <div className="w-16 md:w-24 h-1 bg-green-500/50 mx-auto mb-6 md:mb-8 rounded-full"></div>
 
-                    <p className="text-base md:text-xl font-body text-white/90 mb-6 md:mb-8 leading-relaxed">
-                        All strategic protocols have been executed. Your faction is now established.<br />
-                        <span className="text-white/50 text-xs md:text-sm font-mono mt-4 block uppercase tracking-widest">Free Roam Mode Active</span>
+                    <p className="text-base md:text-xl font-body text-white/90 mb-6 md:mb-4 leading-relaxed">
+                        Take a screenshot and share it in your stories tagging us to enjoy your success!
                     </p>
+
+                    <p className="text-[10px] md:text-xs font-mono text-white/30 uppercase tracking-[0.2em] mb-8">
+                        © GDG LUDHIANA - NIT HAMIRPUR CHAPTER
+                    </p>
+
 
                     <div className="bg-white/5 border border-white/10 rounded-xl p-4 md:p-6 mb-8 md:mb-10">
                         <p className="text-white text-base md:text-lg font-bold mb-4">Continue Your Conquest:</p>
                         <div className="flex flex-col md:flex-row justify-center gap-4">
+
                             <Link to="/attack" className="flex items-center justify-center gap-2 px-6 py-3 bg-red-500/20 hover:bg-red-500 border border-red-500/30 hover:border-red-500 text-red-100 hover:text-white rounded-lg transition-all font-heading uppercase tracking-wider text-sm md:text-base group">
                                 <Sword size={18} className="group-hover:rotate-12 transition-transform" />
                                 Sabotage Rivals

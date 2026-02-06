@@ -15,11 +15,12 @@ export const GameProvider = ({ children }) => {
     const [currentQuestion, setCurrentQuestion] = useState(null);
     const [faction, setFaction] = useState(null);
     const [power, setPower] = useState({
-        economy: 10,
-        military: 10,
-        health: 10,
-        infrastructure: 10
+        economy: 50,
+        military: 50,
+        health: 50,
+        infrastructure: 50
     });
+
 
     // UI State
     const [loading, setLoading] = useState(true);
@@ -52,16 +53,18 @@ export const GameProvider = ({ children }) => {
 
         if (!userId) {
             // Reset on logout
-            setPower({ economy: 10, military: 10, health: 10, infrastructure: 10 });
+            setPower({ economy: 50, military: 50, health: 50, infrastructure: 50 });
             setCurrentQuestion(null);
             setFaction(null);
             setGameOver(false);
             setUnlockTime(null);
             setLockedAnswer(null);
             setPendingNextQid(null);
+            setIsInitialized(false);
             setLoading(false);
             return;
         }
+
 
         const initGame = async () => {
             try {

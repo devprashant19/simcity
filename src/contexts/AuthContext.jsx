@@ -228,11 +228,14 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const logout = () => {
+    const logout = async () => {
         localStorage.removeItem('token');
         setMongoUser(null);
-        return signOut(auth);
+        setCurrentUser(null);
+        await signOut(auth);
+        window.location.href = '/login'; // Force reload to clear all context states
     };
+
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
