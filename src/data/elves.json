@@ -280,7 +280,7 @@
 
     "Q13": {
       "qid": "Q13",
-      "type": "outcome",
+      "type": "decision",
       "text": "Eleven canals carry moonwater; blockages cause disease in lower districts.",
       "options": [
         {

@@ -60,24 +60,24 @@
 		"Q4": {
 			"qid": "Q4",
 			"type": "input",
-			"text": "Target criminals and other evil ninjas",
-			"correctAnswer": "ANY",
+			"text": "To target criminals effectively, you must understand: What is the difference between justice and vengeance? (One word)",
+			"correctAnswer": "Mercy",
 			"effects": { "military": 8, "health": 1, "economy": -2, "infrastructure": -1 },
 			"nextQid": "Q5"
 		},
 		"Q5": {
 			"qid": "Q5",
 			"type": "input",
-			"text": "Target wealthy people from other villages",
-			"correctAnswer": "ANY",
+			"text": "Targeting the wealthy requires strategy: What grows when taken, but shrinks when shared among thieves?",
+			"correctAnswer": "Suspicion",
 			"effects": { "military": 5, "health": -6, "economy": 12, "infrastructure": -3 },
 			"nextQid": "Q6"
 		},
 		"Q6": {
 			"qid": "Q6",
 			"type": "input",
-			"text": "Your image has fallen down",
-			"correctAnswer": "ANY",
+			"text": "Your image has fallen down. To restore honor, answer: What can be built in years but destroyed in moments?",
+			"correctAnswer": "Reputation",
 			"effects": { "military": -4, "health": -5, "economy": -4, "infrastructure": -1 },
 			"nextQid": "Q7"
 		},
@@ -118,24 +118,24 @@
 		"Q9": {
 			"qid": "Q9",
 			"type": "input",
-			"text": "Surrender and say sorry to all other",
-			"correctAnswer": "ANY",
+			"text": "To surrender honorably, you must know: What is stronger than weapons but cannot be held?",
+			"correctAnswer": "Peace",
 			"effects": { "military": -3, "health": 4, "economy": -2, "infrastructure": -1 },
 			"nextQid": "Q10"
 		},
 		"Q10": {
 			"qid": "Q10",
 			"type": "input",
-			"text": "We shall introduce schools",
-			"correctAnswer": "",
+			"text": "We shall introduce schools. To build proper education, answer: What teaches without speaking?",
+			"correctAnswer": "Experience",
 			"effects": { "military": 6, "health": 7, "economy": -2, "infrastructure": 6 },
 			"nextQid": "Q11"
 		},
 		"Q11": {
 			"qid": "Q11",
 			"type": "input",
-			"text": "Only the strong survive. Training missions are lethal.",
-			"correctAnswer": "ANY",
+			"text": "Only the strong survive. Training missions are lethal. To understand survival: What kills more than battles but leaves no scars?",
+			"correctAnswer": "Neglect",
 			"effects": { "military": 9, "health": -8, "economy": -2, "infrastructure": 2 },
 			"nextQid": "Q12"
 		},
@@ -159,8 +159,8 @@
 		"Q13": {
 			"qid": "Q13",
 			"type": "input",
-			"text": "Secretly save promising students.",
-			"correctAnswer": "ANY",
+			"text": "To save promising students secretly, you need: What is invisible but protects better than walls?",
+			"correctAnswer": "Vigilance",
 			"effects": { "military": 2, "health": 6, "economy": -1, "infrastructure": 1 },
 			"nextQid": "Q14"
 		},
@@ -184,8 +184,8 @@
 		"Q15": {
 			"qid": "Q15",
 			"type": "input",
-			"text": "No medical aid. No rescue.",
-			"correctAnswer": "ANY",
+			"text": "No medical aid. No rescue. To embrace this path: What grows in darkness but dies in compassion?",
+			"correctAnswer": "Ruthlessness",
 			"effects": { "military": 7, "health": -12, "economy": -4, "infrastructure": -3 },
 			"nextQid": "Q16"
 		},
@@ -209,16 +209,16 @@
 		"Q17": {
 			"qid": "Q17",
 			"type": "input",
-			"text": "Outcome: Training reforms complete",
-			"correctAnswer": "ANY",
+			"text": "Outcome: Training reforms complete. To cement your legacy: What outlives the builder?",
+			"correctAnswer": "Tradition",
 			"effects": { "military": 4, "health": 5, "economy": 2, "infrastructure": 4 },
 			"nextQid": "Q50"
 		},
 		"Q18": {
 			"qid": "Q18",
 			"type": "input",
-			"text": "Students are trained in combat, intelligence, teamwork, and ethics.",
-			"correctAnswer": "ANY",
+			"text": "Students are trained in combat, intelligence, teamwork, and ethics. To begin: What is the foundation of all learning?",
+			"correctAnswer": "Curiosity",
 			"effects": { "military": 8, "health": 6, "economy": 2, "infrastructure": 4 },
 			"nextQid": "Q19"
 		},
@@ -252,8 +252,8 @@
 		"Q20": {
 			"qid": "Q20",
 			"type": "input",
-			"text": "There should be other activities like farming and agriculture for students not interested in becoming ninja",
-			"correctAnswer": "ANY",
+			"text": "For practical rotations, understand: What feeds both body and soil?",
+			"correctAnswer": "Cycle",
 			"effects": { "military": 2, "health": 6, "economy": 9, "infrastructure": 5 },
 			"nextQid": "Q21"
 		},
@@ -277,16 +277,16 @@
 		"Q22": {
 			"qid": "Q22",
 			"type": "input",
-			"text": "Classroom-focused theory path chosen",
-			"correctAnswer": "ANY",
+			"text": "For classroom theory mastery: What is known by all but mastered by few?",
+			"correctAnswer": "Basics",
 			"effects": { "military": 5, "health": 3, "economy": 2, "infrastructure": 4 },
 			"nextQid": "Q37"
 		},
 		"Q23": {
 			"qid": "Q23",
 			"type": "input",
-			"text": "Build a training facility camp",
-			"correctAnswer": "ANY",
+			"text": "To build a training camp: What must be balanced between discipline and creativity?",
+			"correctAnswer": "Structure",
 			"effects": { "military": 9, "health": 3, "economy": -3, "infrastructure": 8 },
 			"nextQid": "Q24"
 		},
@@ -310,24 +310,24 @@
 		"Q25": {
 			"qid": "Q25",
 			"type": "input",
-			"text": "Build more homes",
-			"correctAnswer": "ANY",
+			"text": "To build homes properly: What makes a house different from a home?",
+			"correctAnswer": "Community",
 			"effects": { "military": 1, "health": 8, "economy": 7, "infrastructure": 7 },
 			"nextQid": "Q17"
 		},
 		"Q26": {
 			"qid": "Q26",
 			"type": "input",
-			"text": "#Mission 2: Escort the feudal lord",
-			"correctAnswer": "ANY",
+			"text": "#Mission 2: Escort the feudal lord. For protection: What is more reliable than weapons?",
+			"correctAnswer": "Loyalty",
 			"effects": { "military": 8, "health": 4, "economy": 2, "infrastructure": 3 },
 			"nextQid": "Q50"
 		},
 		"Q27": {
 			"qid": "Q27",
 			"type": "input",
-			"text": "Only strength matters. Weak students are expelled or reassigned.",
-			"correctAnswer": "ANY",
+			"text": "Only strength matters. To embrace this: What grows when you crush others?",
+			"correctAnswer": "Fear",
 			"effects": { "military": 9, "health": -8, "economy": -3, "infrastructure": -2 },
 			"nextQid": "Q28"
 		},
@@ -351,8 +351,8 @@
 		"Q29": {
 			"qid": "Q29",
 			"type": "input",
-			"text": "Brutal survival-of-the-fittest.",
-			"correctAnswer": "ANY",
+			"text": "For survival-of-the-fittest: What law governs the jungle?",
+			"correctAnswer": "Nature",
 			"effects": { "military": 10, "health": -9, "economy": -3, "infrastructure": -2 },
 			"nextQid": "Q30"
 		},
@@ -376,24 +376,24 @@
 		"Q31": {
 			"qid": "Q31",
 			"type": "input",
-			"text": "Strength + obedience + teamwork.",
-			"correctAnswer": "ANY",
+			"text": "For strength with teamwork: What multiplies individual power?",
+			"correctAnswer": "Coordination",
 			"effects": { "military": 8, "health": 6, "economy": 2, "infrastructure": 2 },
 			"nextQid": "Q32"
 		},
 		"Q32": {
 			"qid": "Q32",
 			"type": "input",
-			"text": "#Mission 1: Escort the feudal lord",
-			"correctAnswer": "ANY",
+			"text": "#Mission 1: Escort the feudal lord. For successful escort: What is more valuable than speed?",
+			"correctAnswer": "Awareness",
 			"effects": { "military": 8, "health": 3, "economy": 2, "infrastructure": 2 },
 			"nextQid": "Q33"
 		},
 		"Q33": {
 			"qid": "Q33",
 			"type": "input",
-			"text": "You are attacked by a much stronger opponent",
-			"correctAnswer": "ANY",
+			"text": "You are attacked by a much stronger opponent. In such situations: What defeats strength?",
+			"correctAnswer": "Strategy",
 			"effects": { "military": 4, "health": -6, "economy": -2, "infrastructure": -1 },
 			"nextQid": "Q34"
 		},
@@ -417,32 +417,32 @@
 		"Q35": {
 			"qid": "Q35",
 			"type": "input",
-			"text": "Dragon mission resolved",
-			"correctAnswer": "ANY",
+			"text": "Dragon mission resolved. To understand mythical creatures: What is real in legends?",
+			"correctAnswer": "Truth",
 			"effects": { "military": 9, "health": 4, "economy": 6, "infrastructure": 3 },
 			"nextQid": "Q50"
 		},
 		"Q36": {
 			"qid": "Q36",
 			"type": "input",
-			"text": "Formation chosen and applied",
-			"correctAnswer": "ANY",
+			"text": "Formation chosen and applied. What determines victory before battle begins?",
+			"correctAnswer": "Preparation",
 			"effects": { "military": 7, "health": 4, "economy": 2, "infrastructure": 3 },
 			"nextQid": "Q50"
 		},
 		"Q37": {
 			"qid": "Q37",
 			"type": "input",
-			"text": "#Mission 1: Escort the feudal lord",
-			"correctAnswer": "ANY",
+			"text": "#Mission 1: Escort the feudal lord. Without experience: What cannot be taught?",
+			"correctAnswer": "Wisdom",
 			"effects": { "military": 8, "health": 3, "economy": 2, "infrastructure": 2 },
 			"nextQid": "Q38"
 		},
 		"Q38": {
 			"qid": "Q38",
 			"type": "input",
-			"text": "With no real experience the team lacks teamwork and control",
-			"correctAnswer": "ANY",
+			"text": "With no real experience the team lacks teamwork and control. What bridges theory and practice?",
+			"correctAnswer": "Application",
 			"effects": { "military": -5, "health": -6, "economy": -2, "infrastructure": -2 },
 			"nextQid": "Q39"
 		},
@@ -466,24 +466,24 @@
 		"Q40": {
 			"qid": "Q40",
 			"type": "input",
-			"text": "Run and save life of your own ninjas",
-			"correctAnswer": "ANY",
+			"text": "To save your ninjas: What is a leader's first duty?",
+			"correctAnswer": "Protection",
 			"effects": { "military": -5, "health": 6, "economy": -2, "infrastructure": -1 },
 			"nextQid": "Q50"
 		},
 		"Q41": {
 			"qid": "Q41",
 			"type": "input",
-			"text": "Sacrifice few ninjas to save the feudal lord and defeat the enemies",
-			"correctAnswer": "ANY",
+			"text": "To sacrifice for victory: What price is paid by commanders but not soldiers?",
+			"correctAnswer": "Guilt",
 			"effects": { "military": 9, "health": -7, "economy": 3, "infrastructure": 1 },
 			"nextQid": "Q50"
 		},
 		"Q42": {
 			"qid": "Q42",
 			"type": "input",
-			"text": "Mission-based learning: Students learn through real but supervised missions.",
-			"correctAnswer": "ANY",
+			"text": "Mission-based learning requires: What is the best teacher?",
+			"correctAnswer": "Mistakes",
 			"effects": { "military": 12, "health": 6, "economy": 5, "infrastructure": 6 },
 			"nextQid": "Q43"
 		},
@@ -507,16 +507,16 @@
 		"Q44": {
 			"qid": "Q44",
 			"type": "input",
-			"text": "Abandon the mission",
-			"correctAnswer": "ANY",
+			"text": "To abandon wisely: What is stronger than ambition?",
+			"correctAnswer": "Prudence",
 			"effects": { "military": -4, "health": 5, "economy": -2, "infrastructure": -1 },
 			"nextQid": "Q50"
 		},
 		"Q45": {
 			"qid": "Q45",
 			"type": "input",
-			"text": "Get the fruit",
-			"correctAnswer": "ANY",
+			"text": "To seize power: What risk accompanies all great rewards?",
+			"correctAnswer": "Corruption",
 			"effects": { "military": 10, "health": -8, "economy": 6, "infrastructure": 3 },
 			"nextQid": "Q50"
 		},
@@ -925,7 +925,7 @@
 		"Q67": {
 			"qid": "Q67",
 			"type": "input",
-			"text": "🍀 Riddle: I increase when control weakens, but also when control tightens. I disappear only when systems replace force. Ninjas suppress me, armies provoke me, and cities collapse if I outlive patience. What am I?",
+			"text": "🍀 Riddle 4: I increase when control weakens, but also when control tightens. I disappear only when systems replace force. Ninjas suppress me, armies provoke me, and cities collapse if I outlive patience. What am I?",
 			"correctAnswer": "Tension",
 			"effects": { "military": 5, "health": 5, "economy": 5, "infrastructure": 5 },
 			"nextQid": "Q68"
@@ -933,7 +933,7 @@
 		"Q68": {
 			"qid": "Q68",
 			"type": "input",
-			"text": "🍀 Riddle 4: I am not secrecy, but secrecy depends on me. I am not law, but law fails without me. Ninjas enforce me indirectly, cities violate me unknowingly. What am I?",
+			"text": "🍀 Riddle 5: I am not secrecy, but secrecy depends on me. I am not law, but law fails without me. Ninjas enforce me indirectly, cities violate me unknowingly. What am I?",
 			"correctAnswer": "Boundaries",
 			"effects": { "military": 5, "health": 5, "economy": 5, "infrastructure": 5 },
 			"nextQid": "Q69"
@@ -965,7 +965,7 @@
 		"Q72": {
 			"qid": "Q72",
 			"type": "input",
-			"text": "Riddle 10: I save lives quietly, but am blamed loudly. When removed, heroes increase and cities fall. What am I?",
+			"text": "🍀 Riddle 9: I save lives quietly, but am blamed loudly. When removed, heroes increase and cities fall. What am I?",
 			"correctAnswer": "Infrastructure",
 			"effects": { "military": 5, "health": 5, "economy": 5, "infrastructure": 5 },
 			"nextQid": "Q73"
@@ -973,7 +973,7 @@
 		"Q73": {
 			"qid": "Q73",
 			"type": "input",
-			"text": "Riddle 12: I look like kindness, feel like weakness, but outlive brutality. What am I?",
+			"text": "🍀 Riddle 10: I look like kindness, feel like weakness, but outlive brutality. What am I?",
 			"correctAnswer": "Mercy",
 			"effects": { "military": 5, "health": 5, "economy": 5, "infrastructure": 5 },
 			"nextQid": "Q74"
@@ -981,7 +981,7 @@
 		"Q74": {
 			"qid": "Q74",
 			"type": "input",
-			"text": "Riddle 14: I create warriors quickly, but commanders slowly. Those who skip me regret it later. What am I?",
+			"text": "🍀 Riddle 11: I create warriors quickly, but commanders slowly. Those who skip me regret it later. What am I?",
 			"correctAnswer": "Experience",
 			"effects": { "military": 5, "health": 5, "economy": 5, "infrastructure": 5 },
 			"nextQid": "Q75"
@@ -989,7 +989,7 @@
 		"Q75": {
 			"qid": "Q75",
 			"type": "input",
-			"text": "Riddle 15: I am taken from the poor, counted by the rich, and worshipped by rulers. Yet I cannot heal anyone. What am I?",
+			"text": "🍀 Riddle 12: I am taken from the poor, counted by the rich, and worshipped by rulers. Yet I cannot heal anyone. What am I?",
 			"correctAnswer": "Economy",
 			"effects": { "military": 5, "health": 5, "economy": 5, "infrastructure": 5 },
 			"nextQid": "Q76"
@@ -997,7 +997,7 @@
 		"Q76": {
 			"qid": "Q76",
 			"type": "input",
-			"text": "Riddle 18: I do not appear on maps, but decide their borders. Ignore me and rebellions rise. What am I?",
+			"text": "🍀 Riddle 13: I do not appear on maps, but decide their borders. Ignore me and rebellions rise. What am I?",
 			"correctAnswer": "Trust",
 			"effects": { "military": 5, "health": 5, "economy": 5, "infrastructure": 5 },
 			"nextQid": "Q77"
@@ -1005,7 +1005,7 @@
 		"Q77": {
 			"qid": "Q77",
 			"type": "input",
-			"text": "Riddle 20: I am the final test. Those who seek me fail. Those who avoid me earn it. What am I?",
+			"text": "🍀 Riddle 14: I am the final test. Those who seek me fail. Those who avoid me earn it. What am I?",
 			"correctAnswer": "Authority",
 			"effects": { "military": 5, "health": 5, "economy": 5, "infrastructure": 5 },
 			"nextQid": "Q78"

@@ -212,7 +212,7 @@ const Game = () => {
                                     </div>
                                     <span className={`block text-base md:text-xl font-bold transition-colors mb-1 md:mb-2 pr-8 ${isSelected ? 'text-ochre' : 'text-white group-hover:text-ochre'}`}>{option.text}</span>
 
-                                    {option.effects && (
+                                    {option.effects && isSelected && (
                                         <div className="flex flex-wrap gap-2 mt-2 md:mt-4 text-[10px] md:text-xs font-mono opacity-100 transition-opacity">
                                             {Object.entries(option.effects).map(([k, v]) => (
                                                 <span key={k} className={`${v > 0 ? 'text-green-400' : 'text-red-400'}`}>
@@ -272,10 +272,20 @@ const Game = () => {
                                             <div className="p-6 bg-green-500/10 border border-green-500/30 rounded-xl text-center animate-fade-in">
                                                 <CheckCircle size={32} className="mx-auto text-green-500 mb-2" />
                                                 <h3 className="text-xl font-heading text-green-400 uppercase tracking-widest mb-1">Access Granted</h3>
-                                                <p className="text-white/60 font-mono text-sm leading-relaxed">
+                                                <p className="text-white/60 font-mono text-sm leading-relaxed mb-4">
                                                     Code accepted. System compiling results.<br />
                                                     <strong>Cooldown Active: 2 Minutes</strong>
                                                 </p>
+                                                {/* Show Effects for Input Question */}
+                                                {currentQuestion.effects && (
+                                                    <div className="flex flex-wrap justify-center gap-2 mt-2 text-xs font-mono">
+                                                        {Object.entries(currentQuestion.effects).map(([k, v]) => (
+                                                            <span key={k} className={`px-2 py-1 rounded border ${v > 0 ? 'bg-green-500/20 border-green-500/50 text-green-300' : 'bg-red-500/20 border-red-500/50 text-red-300'}`}>
+                                                                {k.toUpperCase()} {v > 0 ? '+' : ''}{v}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                )}
                                             </div>
                                         ) : (
                                             <>
