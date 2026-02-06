@@ -10,144 +10,80 @@ export const useGame = () => useContext(GameContext);
 
 export const GameProvider = ({ children }) => {
     const { mongoUser } = useAuth();
-    // Use local questions data directly. Initializing as null, loading in effect.
-    const [questionsData, setQuestionsData] = useState(null);
-    const [currentQuestionKey, setCurrentQuestionKey] = useState(null);
-    const [faction, setFaction] = useState(null);
 
-    // Restored State Variables
+    // Core Game Data
+    const [currentQuestion, setCurrentQuestion] = useState(null);
+    const [faction, setFaction] = useState(null);
     const [power, setPower] = useState({
         economy: 10,
         military: 10,
         health: 10,
         infrastructure: 10
     });
+
+    // UI State
     const [loading, setLoading] = useState(true);
     const [gameOver, setGameOver] = useState(false);
 
-    // Timer Logic
+    // Timer / Progression Logic
     const [unlockTime, setUnlockTime] = useState(null);
     const [lockedAnswer, setLockedAnswer] = useState(null);
 
-    // Loaded qData references
-    const [qData, setQData] = useState(null);
+    // Holds the next question ID/Data while the timer is running
+    const [pendingNextQid, setPendingNextQid] = useState(null);
 
-    // Flag to prevent saving to localStorage before we have loaded from it
     const [isInitialized, setIsInitialized] = useState(false);
 
-    // Helper to load specific faction data
-    const loadFactionData = async (factionName) => {
-        let data;
-        switch (factionName) {
-            case 'Ninja':
-                data = await import('../data/ninja.json');
-                break;
-            case 'Dwarfs':
-                data = await import('../data/dwarfs.json');
-                break;
-            case 'Elves':
-                data = await import('../data/elves.json');
-                break;
-            default:
-                // Fallback or default questions if needed, though we want forced selection
-                data = await import('../data/questions.json');
+    // Fetch the detailed question object from server
+    const fetchCurrentQuestion = async () => {
+        try {
+            const res = await api.get('/game/current-question');
+            setCurrentQuestion(res.data);
+            return res.data;
+        } catch (err) {
+            console.error("Failed to fetch question:", err);
+            return null;
         }
-        return data.default || data;
     };
 
-    // Initialize Game Data and State
+    // Initialize Game
     useEffect(() => {
-        // Safe check for ID, supporting both _id and id (Mongoose default vs virtuals)
         const userId = mongoUser?._id || mongoUser?.id;
 
-        // Ensure loading is set to false if no user, so we don't get stuck on spinner forever if auth fails/delays
         if (!userId) {
-            // RESET STATE ON LOGOUT
-            setPower({
-                economy: 10,
-                military: 10,
-                health: 10,
-                infrastructure: 10
-            });
-            setCurrentQuestionKey(null);
+            // Reset on logout
+            setPower({ economy: 10, military: 10, health: 10, infrastructure: 10 });
+            setCurrentQuestion(null);
             setFaction(null);
             setGameOver(false);
             setUnlockTime(null);
             setLockedAnswer(null);
-
+            setPendingNextQid(null);
             setLoading(false);
             return;
         }
 
         const initGame = async () => {
             try {
-                // Check Local Storage for Faction
+                setLoading(true);
+
+                // 1. Restore minimal state from LocalStorage (Timer/UI only)
                 const storageKey = `simcity_${userId}`;
-                const savedFaction = localStorage.getItem(`${storageKey}_faction`);
-                const savedQIdx = localStorage.getItem(`${storageKey}_currentQ`);
-                const savedPower = localStorage.getItem(`${storageKey}_power`);
-                const savedGameOver = localStorage.getItem(`${storageKey}_gameOver`);
                 const savedUnlockTime = localStorage.getItem(`${storageKey}_unlockTime`);
                 const savedLockedAnswer = localStorage.getItem(`${storageKey}_lockedAnswer`);
+                const savedPendingNext = localStorage.getItem(`${storageKey}_pendingNextQid`);
 
                 if (savedUnlockTime) setUnlockTime(parseInt(savedUnlockTime, 10));
-                else setUnlockTime(null); // Explicit reset for new user
-
                 if (savedLockedAnswer) setLockedAnswer(savedLockedAnswer);
-                else setLockedAnswer(null); // Explicit reset for new user
+                if (savedPendingNext) setPendingNextQid(savedPendingNext);
 
-                // PRIORITIZE BACKEND DATA
-                // mongoUser is the source of truth if it has data
-                const backendFaction = mongoUser.faction;
-                const backendQIdx = mongoUser.currentQuestion;
+                // 2. Load Core Data from Backend (Truth)
+                // mongoUser should have latest power/faction provided by AuthContext/VerifyToken
+                if (mongoUser.faction) setFaction(mongoUser.faction);
+                if (mongoUser.power) setPower(mongoUser.power);
 
-                console.log("[DEBUG] InitGame for User:", userId);
-                console.log("[DEBUG] MongoUser Faction:", backendFaction, "QIdx:", backendQIdx);
-                console.log("[DEBUG] Saved Local Faction:", savedFaction, "QIdx:", savedQIdx);
-
-                const effectiveFaction = backendFaction || savedFaction;
-
-                let finalData = null;
-
-                if (effectiveFaction) {
-                    setFaction(effectiveFaction);
-                    finalData = await loadFactionData(effectiveFaction);
-                    setQData(finalData);
-                    setQuestionsData(finalData);
-                }
-
-                // Restore State
-                if (finalData) {
-                    if (backendQIdx) {
-                        setCurrentQuestionKey(backendQIdx);
-                    } else if (savedQIdx && !backendQIdx) {
-                        setCurrentQuestionKey(savedQIdx);
-                    } else {
-                        setCurrentQuestionKey(finalData.startQid);
-                    }
-                }
-
-                // Power Restoration: Trust Server > LocalStorage
-                if (mongoUser.power) {
-                    console.log("[DEBUG] Restoring Power from Server:", mongoUser.power);
-                    setPower(prev => ({ ...prev, ...mongoUser.power }));
-                } else if (savedPower) {
-                    try {
-                        const parsed = JSON.parse(savedPower);
-                        if (parsed) {
-                            console.log("[DEBUG] Restoring Power from LocalStorage:", parsed);
-                            setPower(parsed);
-                        }
-                    } catch (e) {
-                        console.error("Failed to parse saved power", e);
-                    }
-                }
-
-                if (savedGameOver === 'true') {
-                    setGameOver(true);
-                } else {
-                    setGameOver(false);
-                }
+                // 3. Fetch Question
+                await fetchCurrentQuestion();
 
             } catch (err) {
                 console.error("Failed to init game", err);
@@ -156,19 +92,17 @@ export const GameProvider = ({ children }) => {
                 setIsInitialized(true);
             }
         };
-        initGame();
-    }, [mongoUser]); // Re-run when user changes
 
-    // Save State on Updates - GUARDED & SCOPED
+        if (mongoUser) initGame();
+    }, [mongoUser]);
+
+
+    // Save ephemeral UI state (Timers) to LocalStorage
     useEffect(() => {
         const userId = mongoUser?._id || mongoUser?.id;
         if (!isInitialized || !userId) return;
 
         const storageKey = `simcity_${userId}`;
-        if (faction) localStorage.setItem(`${storageKey}_faction`, faction);
-        if (currentQuestionKey) localStorage.setItem(`${storageKey}_currentQ`, currentQuestionKey);
-        if (power) localStorage.setItem(`${storageKey}_power`, JSON.stringify(power));
-        localStorage.setItem(`${storageKey}_gameOver`, gameOver);
 
         if (unlockTime) localStorage.setItem(`${storageKey}_unlockTime`, unlockTime);
         else localStorage.removeItem(`${storageKey}_unlockTime`);
@@ -176,38 +110,19 @@ export const GameProvider = ({ children }) => {
         if (lockedAnswer) localStorage.setItem(`${storageKey}_lockedAnswer`, lockedAnswer);
         else localStorage.removeItem(`${storageKey}_lockedAnswer`);
 
+        if (pendingNextQid) localStorage.setItem(`${storageKey}_pendingNextQid`, pendingNextQid);
+        else localStorage.removeItem(`${storageKey}_pendingNextQid`);
 
-    }, [currentQuestionKey, power, gameOver, isInitialized, mongoUser, faction, unlockTime, lockedAnswer]);
+    }, [unlockTime, lockedAnswer, pendingNextQid, isInitialized, mongoUser]);
 
 
-    // Find current question object
-    const currentQuestion = (qData && qData.questions && currentQuestionKey)
-        ? qData.questions[currentQuestionKey]
-        : null;
-
-    const updatePower = async (impact) => {
-        try {
-            // Optimistic update
-            const newPower = { ...power };
-            Object.keys(impact).forEach(key => {
-                if (newPower[key] !== undefined) {
-                    newPower[key] += impact[key];
-                }
-            });
-            setPower(newPower);
-
-            // Backend Sync
-            console.log("[DEBUG] Syncing Power:", newPower);
-            await api.post('/point/update', newPower);
-        } catch (err) {
-            console.error("Failed to sync power stats", err);
-        }
+    const updatePower = (newPower) => {
+        setPower(newPower);
+        // We assume backend handles persistence on /answer, preventing double-writes here
     };
 
     /**
      * Locks the answer and starts a timer.
-     * @param {string} answer - The selected answer.
-     * @param {number} minutes - Duration in minutes.
      */
     const lockWithTimer = (answer, minutes) => {
         setLockedAnswer(answer);
@@ -216,86 +131,74 @@ export const GameProvider = ({ children }) => {
     };
 
     const handleAnswer = async (answer, forceSubmit = false, isMCQConfirm = false) => {
-        if (!currentQuestion) return;
 
-        // --- PREPARE LOGIC ---
-        // Calc Next QID and Effects *before* checking phase, so we can use them in Phase 1 (Sync)
-        console.log("[DEBUG] handleAnswer called with:", answer); // NEW LOG
-        const isMCQ = (currentQuestion.type === 'decision' || currentQuestion.type === 'option' || currentQuestion.type === 'outcome');
-        let nextQid = currentQuestion.nextQid;
-        let effects = {};
-
-        if (currentQuestion.type === 'input') {
-            // Input Check logic
-            const isCorrect = currentQuestion.correctAnswer === "ANY" ||
-                (currentQuestion.correctAnswer && answer.toLowerCase() === currentQuestion.correctAnswer.toLowerCase());
-
-            console.log("[DEBUG] Input Question. Correct?", isCorrect); // NEW LOG
-
-            if (!isCorrect && !forceSubmit) {
-                // Only return false if we are in Phase 1 attempt
-                return { success: false, message: "Incorrect passkey." };
-            }
-            // If Input Correct:
-            effects = currentQuestion.effects || {};
-        } else if (isMCQ) {
-            const selectedOption = currentQuestion.options.find(o => o.text === answer);
-            console.log("[DEBUG] Selected Option:", selectedOption); // NEW LOG
-            if (selectedOption) {
-                effects = selectedOption.effects || {};
-                console.log("[DEBUG] Effects Found:", effects); // NEW LOG
-                if (selectedOption.nextQid) {
-                    nextQid = selectedOption.nextQid;
-                }
-            }
-        }
-
-        // --- PHASE 1: START TIMER + IMMEDIATE SYNC ---
-        // Triggered by Modal Confirm (MCQ) or Correct Input
-        if ((isMCQConfirm) || (currentQuestion.type === 'input' && !lockedAnswer && !forceSubmit)) {
-
-            // 1. Lock Local Timer
-            const duration = isMCQConfirm ? 2 : 2;
-            lockWithTimer(answer, duration);
-
-            // 2. IMMEDIATE SYNC to Backend
-            // Allow user to "move forward" on other devices right away
-            if (effects && Object.keys(effects).length > 0) {
-                updatePower(effects); // Syncs power
-            }
-
-            if (nextQid && !currentQuestion.isEnd) {
-                try {
-                    await api.post('/game/update-progress', { currentQuestion: nextQid });
-                } catch (err) {
-                    console.error("Failed to sync progress early", err);
-                }
-            }
-
-            // Return early. Local UI waits.
-            return { success: true, message: " Protocols engaging..." };
-        }
-
-        // --- PHASE 2: PROCEED (Force Submit) ---
-        // Triggered by "Proceed" button after timer
+        // --- PHASE 2: FORCE SUBMIT (Timer Ended or User Skipped) ---
         if (forceSubmit) {
-            console.log("[DEBUG] Force Submit Triggered. NextQid:", nextQid); // NEW LOG
-
-            // Backend is already updated. Just catch up Local State.
+            console.log("[DEBUG] Force Proceed. Pending QID:", pendingNextQid);
             setUnlockTime(null);
             setLockedAnswer(null);
 
-            if (currentQuestion.isEnd) {
-                console.log("[DEBUG] Game Over"); // NEW LOG
-                setGameOver(true);
-            } else if (nextQid) {
-                console.log("[DEBUG] Advancing to:", nextQid); // NEW LOG
-                setCurrentQuestionKey(nextQid);
-                // Note: We don't sync again here, mostly.
+            if (pendingNextQid) {
+                if (pendingNextQid === 'END') {
+                    setGameOver(true);
+                } else {
+                    // Start next question
+                    // We need to tell backend we are "ready" or just fetch next?
+                    // Actually, submitAnswer (Phase 1) already updated backend "currentQuestion" to the new one.
+                    // So we just fetch it.
+                    await fetchCurrentQuestion();
+                }
+                setPendingNextQid(null);
             } else {
-                console.error("[ERROR] No Next QID found!"); // NEW LOG
+                // Fallback if state lost? Fetch current should resolve it.
+                await fetchCurrentQuestion();
             }
             return { success: true };
+        }
+
+        // --- PHASE 1: SUBMIT & LOCK ---
+        // User clicked an option or submitted text.
+        try {
+            // 1. Determine local input type for simple index handling if needed
+            // But API expects: { answer: stringOrIndex }
+            // Frontend passes 'text' for MCQ usually, let's convert to index if needed? 
+            // The previous code passed text. The backend logic I wrote expects INDEX for decision.
+            // Let's fix that mismatch.
+
+            let payloadAnswer = answer;
+            if (currentQuestion.type === 'decision' || currentQuestion.type === 'option') {
+                // Find index
+                const idx = currentQuestion.options.findIndex(o => o.text === answer);
+                if (idx === -1) return { success: false, message: "Invalid option" };
+                payloadAnswer = idx;
+            }
+
+            console.log("[DEBUG] Submitting Answer:", payloadAnswer);
+
+            const res = await api.post('/game/answer', { answer: payloadAnswer });
+            const { success, isCorrect, effects, nextQid, newPower, message } = res.data;
+
+            if (!success) {
+                return { success: false, message: message || "Incorrect answer" };
+            }
+
+            // Correct Answer Process:
+
+            // 2. Start Timer (Visual)
+            // Use 2 minutes for standard loop
+            lockWithTimer(answer, 2);
+
+            // 3. Store Next QID pending release
+            setPendingNextQid(nextQid);
+
+            // 4. Update Power (Immediate Feedback)
+            if (newPower) updatePower(newPower);
+
+            return { success: true, message: message };
+
+        } catch (err) {
+            console.error("Answer submission failed", err);
+            return { success: false, message: err.response?.data?.message || "Communication failed" };
         }
     };
 
@@ -305,29 +208,20 @@ export const GameProvider = ({ children }) => {
 
         setLoading(true);
         try {
-            const data = await loadFactionData(selectedFaction);
-            const finalData = data.default || data;
+            // Set faction on backend
+            // We can use update-progress even though we are "starting"
+            // Or rely on a seed? update-progress is fine.
+            await api.post('/game/update-progress', { faction: selectedFaction });
 
             setFaction(selectedFaction);
-            setQData(finalData);
-            setQuestionsData(finalData);
-            setCurrentQuestionKey(finalData.startQid);
-            setGameOver(false);
 
-            // Clear any old timer state
+            // Fetch first question (backend logic ensures startQid if currentQuestion null)
+            const q = await fetchCurrentQuestion();
+
+            setGameOver(false);
             setUnlockTime(null);
             setLockedAnswer(null);
-
-            // Force save immediately to avoid race conditions with unmount/reload
-            const storageKey = `simcity_${userId}`;
-            localStorage.setItem(`${storageKey}_faction`, selectedFaction);
-            localStorage.setItem(`${storageKey}_currentQ`, finalData.startQid);
-
-            // Sync Faction to Backend
-            await api.post('/game/update-progress', {
-                faction: selectedFaction,
-                currentQuestion: finalData.startQid
-            });
+            setPendingNextQid(null);
 
         } catch (err) {
             console.error("Error selecting faction:", err);
@@ -336,32 +230,35 @@ export const GameProvider = ({ children }) => {
         }
     };
 
-    const resetGame = () => {
-        const userId = mongoUser?._id || mongoUser?.id;
-        if (!userId) return;
+    const resetGame = async () => {
+        // Not fully implemented on backend yet for "Hard Reset", but we can clear progress
+        // For now, simple manual reset
+        try {
+            setLoading(true);
+            const initialPower = { economy: 10, military: 10, health: 10, infrastructure: 10 };
 
-        const start = qData?.startQid || 'Q1';
-        setCurrentQuestionKey(start);
-        const initialPower = { economy: 10, military: 10, health: 10, infrastructure: 10 };
-        setPower(initialPower);
-        setGameOver(false);
-        setUnlockTime(null);
-        setLockedAnswer(null);
+            // Reset backend state (Assuming we add a reset endpoint or just update manually)
+            // Since we don't have a clear /reset, we use update-progress with manual values
+            // We assume Data StartQid is Q1.
+            await api.post('/game/update-progress', {
+                currentQuestion: 'Q1',
+                faction: faction
+            });
+            await api.post('/point/update', initialPower);
 
-        // Clear Storage (Scoped) but KEEP faction
-        const storageKey = `simcity_${userId}`;
-        localStorage.setItem(`${storageKey}_currentQ`, start);
-        localStorage.setItem(`${storageKey}_power`, JSON.stringify(initialPower));
-        localStorage.setItem(`${storageKey}_gameOver`, false);
-        localStorage.removeItem(`${storageKey}_unlockTime`);
-        localStorage.removeItem(`${storageKey}_lockedAnswer`);
+            setPower(initialPower);
+            setGameOver(false);
+            setUnlockTime(null);
+            setLockedAnswer(null);
+            setPendingNextQid(null);
 
-        // Ensure faction remains
-        if (faction) localStorage.setItem(`${storageKey}_faction`, faction);
+            await fetchCurrentQuestion(); // Load Q1
 
-        // Sync reset to backend
-        api.post('/point/update', initialPower);
-        api.post('/game/update-progress', { currentQuestion: start });
+        } catch (err) {
+            console.error("Reset failed", err);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const value = {
@@ -371,7 +268,7 @@ export const GameProvider = ({ children }) => {
         gameOver,
         resetGame,
         loading,
-        setPower, // Exported for Help.jsx simulation
+        setPower,
         faction,
         selectFaction,
         unlockTime,

@@ -19,15 +19,26 @@ const Layout = ({ children }) => {
         }
     };
 
+    // Mobile Detection
+    const [isMobile, setIsMobile] = React.useState(window.innerWidth < 768);
+
+    React.useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth < 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     // Dynamic Background Logic
     const getBackgroundImage = () => {
-        if (!faction) return 'none';
-        switch (faction) {
-            case 'Ninja': return 'url("/ninjas.jpeg")';
-            case 'Dwarfs': return 'url("/dwarfs.jpeg")';
-            case 'Elves': return 'url("/elves.jpeg")';
-            default: return 'none'; // Fallback to CSS default if faction invalid
+        const suffix = isMobile ? '_mob.jpeg' : '.jpeg';
+        let base = 'home'; // Default to home
+
+        if (faction) {
+            // Handle "Dwarfs" vs "Dwarves" if needed, assuming simple lowercase for now
+            base = faction.toLowerCase();
         }
+
+        return `url("/${base}${suffix}")`;
     };
 
     const StatusBarItem = ({ icon: Icon, value, color, label }) => (
