@@ -11,7 +11,7 @@ const Leaderboard = () => {
     useEffect(() => {
         const fetchLeaderboard = async () => {
             try {
-                const res = await api.get('/leaderboard/infrastructure');
+                const res = await api.get(`/leaderboard/infrastructure?_t=${new Date().getTime()}`);
                 // The backend returns all users sorted by infrastructure
                 setUsers(res.data.leaderboard || []);
             } catch (err) {
@@ -48,7 +48,7 @@ const Leaderboard = () => {
                         <tr>
                             <th className="p-6 text-sm font-black text-ochre uppercase tracking-wider">Rank</th>
                             <th className="p-6 text-sm font-black text-ochre uppercase tracking-wider">Citizen</th>
-                            <th className="p-6 text-sm font-black text-ochre uppercase tracking-wider text-right">Infrastructure</th>
+                            <th className="p-6 text-sm font-black text-ochre uppercase tracking-wider text-right">Total Power</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -70,7 +70,7 @@ const Leaderboard = () => {
                                         </div>
                                     </td>
                                     <td className="p-6 text-right">
-                                        <span className="text-2xl font-heading text-white">{user.infrastructure || 0}</span>
+                                        <span className="text-2xl font-heading text-white">{user.totalPower}</span>
                                     </td>
                                 </tr>
                             ))}
