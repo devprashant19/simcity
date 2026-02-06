@@ -48,14 +48,56 @@ export const AuthProvider = ({ children }) => {
         } catch (err) {
             console.error("Backend Sync Error:", err);
             // Determine if it's a login or register error and set appropriately
-            setError(err.response?.data?.message || "Failed to sync with backend");
+            const msg = err.response?.data?.message || "Failed to sync with backend";
+            setError(msg);
+
+            // If Forbidden (Email not verified) or Unauthorized, force logout from Firebase
+            if (err.response?.status === 403 || err.response?.status === 401) {
+                await signOut(auth);
+            }
+            throw new Error(msg); // Throw so login() knows it failed
+        }
+    };
+
+    // Error Mapping Helper
+    const mapAuthCodeToMessage = (errorCode) => {
+        switch (errorCode) {
+            case 'auth/invalid-email':
+                return 'Invalid email address format.';
+            case 'auth/user-disabled':
+                return 'This account has been disabled.';
+            case 'auth/user-not-found':
+            case 'auth/invalid-credential':
+                return 'No account found with these credentials.';
+            case 'auth/wrong-password':
+                return 'Incorrect password.';
+            case 'auth/email-already-in-use':
+                return 'An account with this email already exists.';
+            case 'auth/weak-password':
+                return 'Password should be at least 6 characters.';
+            case 'auth/operation-not-allowed':
+                return 'Operation not currently allowed.';
+            case 'auth/network-request-failed':
+                return 'Network error. Please check your connection.';
+            case 'auth/too-many-requests':
+                return 'Too many attempts. Please try again later.';
+            case 'auth/requires-recent-login':
+                return 'Please logout and login again to confirm identity.';
+            default:
+                return 'Authentication failed. Please try again.';
         }
     };
 
     const login = async (email, password) => {
         setError('');
-        const cred = await signInWithEmailAndPassword(auth, email, password);
-        return syncWithBackend(cred.user, password); // Sync likely needs password or update backend to not require it for login
+        try {
+            const cred = await signInWithEmailAndPassword(auth, email, password);
+            return await syncWithBackend(cred.user, password);
+        } catch (err) {
+            console.error("Login Error:", err.code, err.message);
+            setError(mapAuthCodeToMessage(err.code));
+            throw err; // Re-throw so UI can stop loading state if needed
+        }
     };
 
     /**
@@ -63,18 +105,19 @@ export const AuthProvider = ({ children }) => {
      * This is Step 1 of the new registration flow.
      */
     const sendSignupLink = async (email) => {
-        const actionCodeSettings = {
-            // URL you want to redirect back to. The domain (www.example.com) for this
-            // URL must be in the authorized domains list in the Firebase Console.
-            // Using window.location.origin to adapt to localhost or prod.
-            url: `${window.location.origin}/finish-signup`,
-            handleCodeInApp: true,
-        };
-
-        await sendSignInLinkToEmail(auth, email, actionCodeSettings);
-        // Save the email locally so we don't need to ask the user for it again
-        // if they open the link on the same device.
-        window.localStorage.setItem('emailForSignIn', email);
+        setError('');
+        try {
+            const actionCodeSettings = {
+                url: `${window.location.origin}/finish-signup`,
+                handleCodeInApp: true,
+            };
+            await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+            window.localStorage.setItem('emailForSignIn', email);
+        } catch (err) {
+            console.error("Send Link Error:", err.code);
+            setError(mapAuthCodeToMessage(err.code));
+            throw err;
+        }
     };
 
     /**
@@ -82,22 +125,23 @@ export const AuthProvider = ({ children }) => {
      * This is Step 2 of the new registration flow.
      */
     const signInWithLink = async (email, href) => {
-        if (isSignInWithEmailLink(auth, href)) {
-            let emailToUse = email;
-            if (!emailToUse) {
-                // User opened link on different device/browser, ask for email
-                // Ideally this should be handled by the UI before calling this, but as a fallback:
-                // emailToUse = window.prompt('Please provide your email for confirmation');
-                throw new Error("Email is required to complete sign in.");
+        setError('');
+        try {
+            if (isSignInWithEmailLink(auth, href)) {
+                let emailToUse = email;
+                if (!emailToUse) {
+                    throw new Error("Email is required to complete sign in.");
+                }
+                const result = await signInWithEmailLink(auth, emailToUse, href);
+                return result.user;
             }
-
-            const result = await signInWithEmailLink(auth, emailToUse, href);
-            // You can access result.user here
-            // Note: User is now signed in, but might not have a password or username yet.
-            // We do NOT sync with backend yet because we need the username/password form filled out first.
-            return result.user;
+            throw new Error("Invalid sign-in link.");
+        } catch (err) {
+            console.error("Sign In Link Error:", err.code || err.message);
+            // If it's a firebase error code, map it. If generic error, show message.
+            setError(err.code ? mapAuthCodeToMessage(err.code) : err.message);
+            throw err;
         }
-        throw new Error("Invalid sign-in link.");
     };
 
     /**
@@ -105,68 +149,69 @@ export const AuthProvider = ({ children }) => {
      * This is Step 3 of the new registration flow.
      */
     const completeRegistration = async (username, password) => {
-        const user = auth.currentUser;
-        if (!user) throw new Error("No authenticated user found.");
+        setError('');
+        try {
+            const user = auth.currentUser;
+            if (!user) throw new Error("No authenticated user found.");
 
-        // 1. Update Password
-        await updatePassword(user, password);
+            // 1. Update Password
+            await updatePassword(user, password);
 
-        // 2. Update Profile (DisplayName)
-        // Note: updateProfile is imported from 'firebase/auth' - need to make sure it's available or use the object method
-        // But since we are inside a hook, let's use the modular import.
-        // Wait, I need to check imports.
-        // Assuming updateProfile is imported below or I need to import it.
-        // Let's add it to imports first.
+            // 2. Sync with Backend
+            const payload = {
+                firebaseUid: user.uid,
+                email: user.email,
+                username: username,
+                password: password
+            };
 
-        // 3. Sync with Backend
-        // We construct the payload manually since syncWithBackend expects firebaseUser + password
-        // But let's just reuse syncWithBackend logic here to be safe
-
-        // Actually, let's just do it directly here for clarity
-        const payload = {
-            firebaseUid: user.uid,
-            email: user.email,
-            username: username,
-            password: password
-        };
-
-        const res = await api.post('/auth/firebase-auth', payload);
-        localStorage.setItem('token', res.data.token);
-        setMongoUser(res.data.user);
+            const res = await api.post('/auth/firebase-auth', payload);
+            localStorage.setItem('token', res.data.token);
+            setMongoUser(res.data.user);
+        } catch (err) {
+            console.error("Registration Completion Error:", err);
+            if (err.response) {
+                // Backend Error
+                setError(err.response.data.message || "Registration failed on backend.");
+            } else if (err.code) {
+                // Firebase Error
+                setError(mapAuthCodeToMessage(err.code));
+            } else {
+                setError(err.message || "Registration failed.");
+            }
+            throw err;
+        }
     };
 
     const signup = async (username, email, password) => {
-        // Legacy signup - keeping it or removing? 
-        // Required by interface but we are changing the flow.
-        // Let's leave it but it shouldn't be used in the new flow.
         setError('');
-        const cred = await createUserWithEmailAndPassword(auth, email, password);
-
-        // Send Verification Email
-        await sendEmailVerification(cred.user);
-
-        const payload = {
-            firebaseUid: cred.user.uid,
-            email,
-            username,
-            password,
-            emailVerified: false // Initially false
-        };
         try {
-            await api.post('/auth/firebase-auth', payload);
-            // Don't auto-login here. Backend now requires verification.
-            // localStorage.setItem('token', res.data.token);
-            // setMongoUser(res.data.user);
+            const cred = await createUserWithEmailAndPassword(auth, email, password);
 
-            // Force Firebase signout so they aren't "logged in" in the background
-            // waiting for sync that will fail.
-            // Actually, we can leave them Firebase-logged-in but the UI should block them.
-            // But to be safe and force them to click the link/re-login:
+            // Send Verification Email
+            await sendEmailVerification(cred.user);
+
+            const payload = {
+                firebaseUid: cred.user.uid,
+                email,
+                username,
+                password,
+                emailVerified: false // Initially false
+            };
+
+            await api.post('/auth/firebase-auth', payload);
             await signOut(auth);
         } catch (err) {
-            console.error("Signup Backend Error", err);
-            setError(err.response?.data?.message || "Signup failed on backend");
-            await signOut(auth); // Cleanup if backend fails
+            console.error("Signup Error", err);
+            if (err.response) {
+                setError(err.response.data.message || "Signup failed on backend");
+            } else if (err.code) {
+                setError(mapAuthCodeToMessage(err.code));
+            } else {
+                setError("Signup failed.");
+            }
+            // Cleanup if needed
+            if (auth.currentUser) await signOut(auth);
             throw err;
         }
     };
@@ -197,7 +242,13 @@ export const AuthProvider = ({ children }) => {
                 // If the user is found in Firebase, we try to sync with the backend.
                 // We don't have the password here (it's null), so syncWithBackend will use the placeholder.
                 // effective for "Login" to the backend if the user already exists there.
-                await syncWithBackend(user);
+                try {
+                    await syncWithBackend(user);
+                } catch (e) {
+                    // Squelch error here, strictly for auto-login attempts.
+                    // The error state is already set by syncWithBackend if needed.
+                    console.log("Auto-sync failed:", e.message);
+                }
             } else {
                 setMongoUser(null);
                 localStorage.removeItem('token');

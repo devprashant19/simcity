@@ -18,7 +18,7 @@ const Login = () => {
             await login(email, password);
             navigate('/game');
         } catch (err) {
-            setError('Failed to log in: ' + err.message);
+            setError(err.message);
         } finally {
             setLoading(false);
         }

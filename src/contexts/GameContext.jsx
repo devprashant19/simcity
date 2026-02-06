@@ -127,18 +127,20 @@ export const GameProvider = ({ children }) => {
                     }
                 }
 
-                if (savedPower) {
+                // Power Restoration: Trust Server > LocalStorage
+                if (mongoUser.power) {
+                    console.log("[DEBUG] Restoring Power from Server:", mongoUser.power);
+                    setPower(prev => ({ ...prev, ...mongoUser.power }));
+                } else if (savedPower) {
                     try {
                         const parsed = JSON.parse(savedPower);
-                        if (parsed) setPower(parsed);
+                        if (parsed) {
+                            console.log("[DEBUG] Restoring Power from LocalStorage:", parsed);
+                            setPower(parsed);
+                        }
                     } catch (e) {
                         console.error("Failed to parse saved power", e);
-                        // Fallback
-                        if (mongoUser.power) setPower(prev => ({ ...prev, ...mongoUser.power }));
                     }
-                } else if (mongoUser.power) {
-                    // Start fresh from DB (or default)
-                    setPower(prev => ({ ...prev, ...mongoUser.power }));
                 }
 
                 if (savedGameOver === 'true') {
