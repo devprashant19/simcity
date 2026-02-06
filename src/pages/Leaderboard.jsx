@@ -70,7 +70,7 @@ const Leaderboard = () => {
                                         </div>
                                     </td>
                                     <td className="p-6 text-right">
-                                        <span className="text-2xl font-heading text-white">{user.totalPower || 0}</span>
+                                        <span className="text-2xl font-heading text-white">{user.totalPower}</span>
                                     </td>
                                 </tr>
                             ))}
