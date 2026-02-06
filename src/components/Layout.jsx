@@ -2,7 +2,7 @@ import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useGame } from '../contexts/GameContext'; // Import context
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Map, User, Trophy, Sword, LogOut, Coins, Shield, Activity, Anchor, Heart, BookOpen } from 'lucide-react';
+import { Map, User, Trophy, Sword, LogOut, Coins, Shield, Activity, Anchor, Heart, BookOpen, Home } from 'lucide-react';
 
 const Layout = ({ children }) => {
     const { currentUser, mongoUser, logout } = useAuth();
@@ -75,7 +75,7 @@ const Layout = ({ children }) => {
                             SIMCITY<span className="text-ochre">2026</span>
                         </h2>
                         <h2 className="text-lg font-heading tracking-tighter text-white uppercase leading-none md:hidden">
-                            SC<span className="text-ochre">26</span>
+                            SimCity<span className="text-ochre">2026</span>
                         </h2>
 
                         {mongoUser && (
@@ -117,6 +117,9 @@ const Layout = ({ children }) => {
 
                             {/* Desktop-only Quick Links */}
                             <div className="hidden lg:flex items-center gap-2">
+                                <Link to="/game" className={`flex items-center gap-2 px-3 py-1 rounded-full border transition-all group ${location.pathname === '/game' ? 'bg-green-500/20 border-green-500/40 text-green-500' : 'bg-white/5 border-white/5 text-white/40 hover:bg-green-500/10 hover:text-green-500'}`}>
+                                    <Home size={16} />
+                                </Link>
                                 <Link to="/attack" className={`flex items-center gap-2 px-3 py-1 rounded-full border transition-all group ${location.pathname === '/attack' ? 'bg-red-500/20 border-red-500/40 text-red-500' : 'bg-white/5 border-white/5 text-white/40 hover:bg-red-500/10 hover:text-red-500'}`}>
                                     <Sword size={16} />
                                 </Link>

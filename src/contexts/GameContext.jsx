@@ -185,8 +185,8 @@ export const GameProvider = ({ children }) => {
             // Correct Answer Process:
 
             // 2. Start Timer (Visual)
-            // Use 2 minutes for standard loop
-            lockWithTimer(answer, 2);
+            // Set cooldown to 1 second
+            lockWithTimer(answer, 1 / 60);
 
             // 3. Store Next QID pending release
             setPendingNextQid(nextQid);

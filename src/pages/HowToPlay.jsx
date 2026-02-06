@@ -72,7 +72,7 @@ const HowToPlay = () => {
                     <div className="bg-black/40 border border-white/10 p-6 rounded-xl text-center">
                         <Clock size={32} className="mx-auto text-blue-400 mb-4" />
                         <h4 className="font-heading text-white uppercase mb-2">Cool-down</h4>
-                        <p className="text-white/50 text-sm">2 Minutes wait time after every decision or riddle.</p>
+                        <p className="text-white/50 text-sm">1 Second wait time after every decision or riddle.</p>
                     </div>
 
                     {/* War */}
