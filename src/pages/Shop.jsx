@@ -13,7 +13,7 @@ const Shop = () => {
     const [showModal, setShowModal] = useState(false);
     const [pendingUpgrade, setPendingUpgrade] = useState(null);
 
-    const COST_PER_POINT = 5;
+    const COST_PER_POINT = 25;
 
     const initiateBuy = (type) => {
         setError('');
