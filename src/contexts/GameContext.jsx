@@ -188,8 +188,8 @@ export const GameProvider = ({ children }) => {
             // Correct Answer Process:
 
             // 2. Start Timer (Visual)
-            // Set cooldown to 1 second
-            lockWithTimer(answer, 1 / 60);
+            // Set cooldown to 1 minute (60 seconds)
+            lockWithTimer(answer, 1);
 
             // 3. Store Next QID pending release
             setPendingNextQid(nextQid);
