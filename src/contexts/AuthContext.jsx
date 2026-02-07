@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }) => {
                 firebaseUid: firebaseUser.uid,
                 email: firebaseUser.email,
                 username: firebaseUser.displayName || firebaseUser.email.split('@')[0], // Fallback username
-                password: password || "firebase_login_placeholder", // Backend requires password
+                password: password || "system_auth_placeholder", // System Auth
                 emailVerified: firebaseUser.emailVerified
             };
 
@@ -65,26 +65,27 @@ export const AuthProvider = ({ children }) => {
             case 'auth/invalid-email':
                 return 'Invalid email address format.';
             case 'auth/user-disabled':
-                return 'This account has been disabled.';
+                return 'Access denied. Account disabled.';
             case 'auth/user-not-found':
             case 'auth/invalid-credential':
-                return 'No account found with these credentials.';
+                return 'Invalid credentials. Please verify your email and passcode.';
             case 'auth/wrong-password':
-                return 'Incorrect password.';
+                return 'Incorrect passcode.';
             case 'auth/email-already-in-use':
-                return 'An account with this email already exists.';
+                return 'This email is already registered within the system.';
             case 'auth/weak-password':
-                return 'Password should be at least 6 characters.';
+                return 'Passcode is too weak. Minimum 6 characters required.';
             case 'auth/operation-not-allowed':
-                return 'Operation not currently allowed.';
+                return 'System operation denied.';
             case 'auth/network-request-failed':
-                return 'Network error. Please check your connection.';
+                return 'Connection interrupted. Check your network status.';
             case 'auth/too-many-requests':
-                return 'Too many attempts. Please try again later.';
+                return 'Too many attempts. Access temporarily locked.';
+                return 'Too many attempts. Access temporarily locked.';
             case 'auth/requires-recent-login':
-                return 'Please logout and login again to confirm identity.';
+                return 'Session expired. Please re-authenticate.';
             default:
-                return 'Authentication failed. Please try again.';
+                return 'Authentication failed. Access denied.';
         }
     };
 
@@ -95,8 +96,9 @@ export const AuthProvider = ({ children }) => {
             return await syncWithBackend(cred.user, password);
         } catch (err) {
             console.error("Login Error:", err.code, err.message);
-            setError(mapAuthCodeToMessage(err.code));
-            throw err; // Re-throw so UI can stop loading state if needed
+            const cleanMsg = mapAuthCodeToMessage(err.code);
+            setError(cleanMsg);
+            throw new Error(cleanMsg);
         }
     };
 
@@ -115,8 +117,9 @@ export const AuthProvider = ({ children }) => {
             window.localStorage.setItem('emailForSignIn', email);
         } catch (err) {
             console.error("Send Link Error:", err.code);
-            setError(mapAuthCodeToMessage(err.code));
-            throw err;
+            const cleanMsg = mapAuthCodeToMessage(err.code);
+            setError(cleanMsg);
+            throw new Error(cleanMsg);
         }
     };
 
@@ -138,9 +141,9 @@ export const AuthProvider = ({ children }) => {
             throw new Error("Invalid sign-in link.");
         } catch (err) {
             console.error("Sign In Link Error:", err.code || err.message);
-            // If it's a firebase error code, map it. If generic error, show message.
-            setError(err.code ? mapAuthCodeToMessage(err.code) : err.message);
-            throw err;
+            const cleanMsg = err.code ? mapAuthCodeToMessage(err.code) : err.message;
+            setError(cleanMsg);
+            throw new Error(cleanMsg);
         }
     };
 
@@ -170,16 +173,18 @@ export const AuthProvider = ({ children }) => {
             setMongoUser(res.data.user);
         } catch (err) {
             console.error("Registration Completion Error:", err);
+            let cleanMsg = "Registration failed.";
             if (err.response) {
                 // Backend Error
-                setError(err.response.data.message || "Registration failed on backend.");
+                cleanMsg = err.response.data.message || "Registration failed on system.";
             } else if (err.code) {
                 // Firebase Error
-                setError(mapAuthCodeToMessage(err.code));
+                cleanMsg = mapAuthCodeToMessage(err.code);
             } else {
-                setError(err.message || "Registration failed.");
+                cleanMsg = err.message || "Registration failed.";
             }
-            throw err;
+            setError(cleanMsg);
+            throw new Error(cleanMsg);
         }
     };
 
@@ -203,16 +208,17 @@ export const AuthProvider = ({ children }) => {
             await signOut(auth);
         } catch (err) {
             console.error("Signup Error", err);
+            let cleanMsg = "Signup failed.";
             if (err.response) {
-                setError(err.response.data.message || "Signup failed on backend");
+                cleanMsg = err.response.data.message || "Signup failed on system";
             } else if (err.code) {
-                setError(mapAuthCodeToMessage(err.code));
-            } else {
-                setError("Signup failed.");
+                cleanMsg = mapAuthCodeToMessage(err.code);
             }
+            setError(cleanMsg);
+
             // Cleanup if needed
             if (auth.currentUser) await signOut(auth);
-            throw err;
+            throw new Error(cleanMsg);
         }
     };
 
@@ -233,23 +239,17 @@ export const AuthProvider = ({ children }) => {
         setMongoUser(null);
         setCurrentUser(null);
         await signOut(auth);
-        window.location.href = '/login'; // Force reload to clear all context states
+        window.location.href = '/login';
     };
-
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             setCurrentUser(user);
             if (user) {
                 // Determine if we should sync.
-                // If the user is found in Firebase, we try to sync with the backend.
-                // We don't have the password here (it's null), so syncWithBackend will use the placeholder.
-                // effective for "Login" to the backend if the user already exists there.
                 try {
                     await syncWithBackend(user);
                 } catch (e) {
-                    // Squelch error here, strictly for auto-login attempts.
-                    // The error state is already set by syncWithBackend if needed.
                     console.log("Auto-sync failed:", e.message);
                 }
             } else {
