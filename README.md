@@ -43,8 +43,8 @@ Welcome to **SimCity**, a full-stack strategy game where players build their emp
 
 ### 1️⃣ Clone the Repository
 ```bash
-git clone <repository_url>
-cd ssity
+git clone https://github.com/devprashant19/simcity_backend
+cd simcity_backend
 ```
 
 ---
