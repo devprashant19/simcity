@@ -1,4 +1,4 @@
-# 🏙️ SimCity Strategy Game
+# 🏙️ SimCity
 
 Welcome to **SimCity**, a full-stack strategy game where players build their empires, join factions, and battle for supremacy! 🚀
 
