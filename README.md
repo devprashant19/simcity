@@ -1,4 +1,4 @@
-# 🏙️ SimCity
+# 🏙️ SimCity Strategy Game
 
 Welcome to **SimCity**, a full-stack strategy game where players build their empires, join factions, and battle for supremacy! 🚀
 
@@ -112,6 +112,13 @@ VITE_API_URL=http://localhost:5000
 npm run dev
 ```
 *App will open at `http://localhost:5173`*
+
+---
+
+## 🌍 Deployment
+
+*   **Frontend**: Deployed on [Vercel](https://vercel.com/) ▲
+*   **Backend**: Deployed on [Google Cloud](https://cloud.google.com/) ☁️
 
 ---
 
