@@ -9,7 +9,7 @@ const GameContext = createContext();
 export const useGame = () => useContext(GameContext);
 
 export const GameProvider = ({ children }) => {
-    const { mongoUser } = useAuth();
+    const { mongoUser, isDemo } = useAuth();
 
     // Core Game Data
     const [currentQuestion, setCurrentQuestion] = useState(null);
@@ -70,6 +70,27 @@ export const GameProvider = ({ children }) => {
             try {
                 setLoading(true);
 
+                // Demo mode: use mock data, no API calls
+                if (isDemo) {
+                    if (mongoUser.faction) setFaction(mongoUser.faction);
+                    if (mongoUser.power) setPower(mongoUser.power);
+                    setCurrentQuestion({
+                        _id: 'demo-q1',
+                        qid: 'DQ1',
+                        text: 'Your city faces a resource crisis. A neighboring kingdom offers an alliance, but at the cost of your independence. What do you do?',
+                        type: 'decision',
+                        options: [
+                            { text: 'Accept the alliance and share resources', effects: { economy: 10, military: -5, health: 5, infrastructure: 5 } },
+                            { text: 'Decline and invest in self-sufficiency', effects: { economy: -5, military: 5, health: -5, infrastructure: 10 } },
+                            { text: 'Propose a trade agreement instead', effects: { economy: 5, military: 0, health: 5, infrastructure: 5 } },
+                            { text: 'Prepare for potential conflict', effects: { economy: -10, military: 15, health: -5, infrastructure: 0 } }
+                        ]
+                    });
+                    setLoading(false);
+                    setIsInitialized(true);
+                    return;
+                }
+
                 // 1. Restore minimal state from LocalStorage (Timer/UI only)
                 const storageKey = `simcity_${userId}`;
                 const savedUnlockTime = localStorage.getItem(`${storageKey}_unlockTime`);
@@ -97,7 +118,7 @@ export const GameProvider = ({ children }) => {
         };
 
         if (mongoUser) initGame();
-    }, [mongoUser]);
+    }, [mongoUser, isDemo]);
 
 
     // Save ephemeral UI state (Timers) to LocalStorage
@@ -134,6 +155,46 @@ export const GameProvider = ({ children }) => {
     };
 
     const handleAnswer = async (answer, forceSubmit = false, isMCQConfirm = false) => {
+
+        // Demo mode: simulate answer with mock effects
+        if (isDemo) {
+            if (forceSubmit) {
+                setUnlockTime(null);
+                setLockedAnswer(null);
+                // Cycle back to the same demo question
+                return { success: true };
+            }
+
+            // Find the selected option's effects
+            let effects = null;
+            if (currentQuestion && currentQuestion.options) {
+                const option = currentQuestion.options.find(o => o.text === answer);
+                if (option) effects = option.effects;
+            }
+
+            // Apply effects locally
+            if (effects) {
+                setPower(prev => ({
+                    economy: Math.max(0, prev.economy + (effects.economy || 0)),
+                    military: Math.max(0, prev.military + (effects.military || 0)),
+                    health: Math.max(0, prev.health + (effects.health || 0)),
+                    infrastructure: Math.max(0, prev.infrastructure + (effects.infrastructure || 0)),
+                }));
+
+                // Inject effects into the option for UI display
+                setCurrentQuestion(prev => {
+                    if (!prev || !prev.options) return prev;
+                    const newOptions = prev.options.map(o => 
+                        o.text === answer ? { ...o, effects } : o
+                    );
+                    return { ...prev, options: newOptions };
+                });
+            }
+
+            lockWithTimer(answer, 1);
+            setPendingNextQid(null); // Stay on same question in demo
+            return { success: true, message: 'Demo: Decision recorded!' };
+        }
 
         // --- PHASE 2: FORCE SUBMIT (Timer Ended or User Skipped) ---
         if (forceSubmit) {
@@ -242,6 +303,13 @@ export const GameProvider = ({ children }) => {
         const userId = mongoUser?._id || mongoUser?.id;
         if (!userId) return;
 
+        if (isDemo) {
+            setFaction(selectedFaction);
+            setGameOver(false);
+            setLoading(false);
+            return;
+        }
+
         setLoading(true);
         try {
             // Set faction on backend
@@ -267,6 +335,15 @@ export const GameProvider = ({ children }) => {
     };
 
     const resetGame = async () => {
+        if (isDemo) {
+            setPower({ economy: 75, military: 60, health: 80, infrastructure: 65 });
+            setGameOver(false);
+            setUnlockTime(null);
+            setLockedAnswer(null);
+            setPendingNextQid(null);
+            return;
+        }
+
         // Not fully implemented on backend yet for "Hard Reset", but we can clear progress
         // For now, simple manual reset
         try {
@@ -308,7 +385,8 @@ export const GameProvider = ({ children }) => {
         faction,
         selectFaction,
         unlockTime,
-        lockedAnswer
+        lockedAnswer,
+        isDemo
     };
 
     return (

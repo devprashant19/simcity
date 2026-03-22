@@ -4,7 +4,7 @@ import api from '../api';
 import { ShoppingCart, Shield, Activity, Anchor, ArrowUp, Coins, AlertOctagon } from 'lucide-react';
 
 const Shop = () => {
-    const { power, setPower } = useGame();
+    const { power, setPower, isDemo } = useGame();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
@@ -18,6 +18,10 @@ const Shop = () => {
     const initiateBuy = (type) => {
         setError('');
         setSuccess('');
+        if (isDemo) {
+            setError('Demo Mode: Sign up to make real purchases!');
+            return;
+        }
         if (power.economy < COST_PER_POINT) {
             setError(`Insufficient Economy. Need ${COST_PER_POINT} Economy.`);
             return;
