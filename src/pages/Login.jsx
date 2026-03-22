@@ -7,7 +7,7 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    const { login } = useAuth();
+    const { login, demoLogin } = useAuth();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -89,6 +89,19 @@ const Login = () => {
                     <p className="text-xs md:text-sm font-medium text-white/40">
                         New Citizen? <Link to="/register" className="text-ochre hover:text-white transition-colors ml-1 font-bold">Register Now</Link>
                     </p>
+                </div>
+
+                <div className="mt-4 text-center relative z-10">
+                    <button
+                        onClick={() => { demoLogin(); navigate('/game'); }}
+                        className="w-full py-3 md:py-4 bg-transparent hover:bg-cyan-500/10 border border-cyan-500/40 hover:border-cyan-500 text-cyan-400 hover:text-cyan-300 text-sm md:text-base font-heading uppercase tracking-widest transition-all rounded-xl group"
+                    >
+                        <span className="flex items-center justify-center gap-2">
+                            <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse group-hover:bg-cyan-300"></span>
+                            Explore Demo
+                        </span>
+                    </button>
+                    <p className="text-[10px] md:text-xs text-white/30 mt-2 font-mono uppercase tracking-wider">No account needed</p>
                 </div>
             </div>
         </div>

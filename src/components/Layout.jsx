@@ -5,8 +5,8 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Map, User, Trophy, Sword, LogOut, Coins, Shield, Activity, Anchor, Heart, BookOpen, Home } from 'lucide-react';
 
 const Layout = ({ children }) => {
-    const { currentUser, mongoUser, logout } = useAuth();
-    const { power, faction } = useGame(); // Get faction from context
+    const { currentUser, mongoUser, logout, isDemo } = useAuth();
+    const { power, faction } = useGame();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -79,13 +79,20 @@ const Layout = ({ children }) => {
                         </h2>
 
                         {mongoUser && (
-                            <div className="hidden lg:block px-3 py-1 ml-4 rounded-full bg-white/5 border border-white/10 text-[10px] font-mono text-white/60 uppercase tracking-widest">
-                                {mongoUser.username}
+                            <div className="hidden lg:flex items-center gap-2 ml-4">
+                                <div className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] font-mono text-white/60 uppercase tracking-widest">
+                                    {mongoUser.username}
+                                </div>
+                                {isDemo && (
+                                    <div className="px-2 py-1 rounded-full bg-cyan-500/20 border border-cyan-500/40 text-[10px] font-mono text-cyan-400 uppercase tracking-widest animate-pulse">
+                                        DEMO
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>
 
-                    {currentUser && mongoUser ? (
+                    {(currentUser && mongoUser) || isDemo ? (
                         <div className="flex items-center gap-4">
                             {/* Action Limits Display (Mobile & Desktop) */}
                             {location.pathname === '/attack' && (
@@ -155,7 +162,7 @@ const Layout = ({ children }) => {
             )}
 
             {/* Dedicated Status Bar (Below Nav) - HIDDEN ON HOME */}
-            {!isHomePage && currentUser && mongoUser && (
+            {!isHomePage && ((currentUser && mongoUser) || isDemo) && (
                 <div className="fixed top-16 left-0 right-0 z-40 bg-black/60 backdrop-blur-md border-b border-white/10 shadow-lg animate-fade-in">
                     <div className="max-w-7xl mx-auto flex justify-between items-center px-2 md:px-4 overflow-x-auto no-scrollbar">
                         <StatusBarItem icon={Coins} value={power.economy} color="text-yellow-400" label="Economy" />
@@ -172,7 +179,15 @@ const Layout = ({ children }) => {
             </main>
 
             {/* BOTTOM NAVIGATION (Mobile Only) */}
-            {!isHomePage && currentUser && mongoUser && (
+            {!isHomePage && ((currentUser && mongoUser) || isDemo) && (
+                <>
+                {isDemo && (
+                    <div className="md:hidden fixed bottom-14 left-0 right-0 z-40 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border-t border-cyan-500/30 backdrop-blur-md px-4 py-2 text-center">
+                        <p className="text-[10px] md:text-xs text-cyan-300 font-mono uppercase tracking-wider">
+                            Demo Mode — <a href="/register" className="text-white font-bold hover:underline">Sign up</a> to save progress
+                        </p>
+                    </div>
+                )}
                 <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-xl border-t border-white/10 pb-safe">
                     <div className="flex justify-around items-center p-2">
                         <Link to="/game" className={`flex flex-col items-center p-2 rounded-lg transition-all ${location.pathname === '/game' ? 'text-ochre' : 'text-white/40'}`}>
@@ -201,6 +216,7 @@ const Layout = ({ children }) => {
                         </button>
                     </div>
                 </div>
+                </>
             )}
         </div>
     );
