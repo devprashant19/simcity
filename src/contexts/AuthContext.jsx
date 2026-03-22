@@ -23,6 +23,7 @@ export const AuthProvider = ({ children }) => {
     const [mongoUser, setMongoUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [isDemo, setIsDemo] = useState(false);
 
     // Sync with Backend
     const syncWithBackend = async (firebaseUser, password = null) => {
@@ -234,11 +235,36 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
+    const demoLogin = () => {
+        const demoFirebaseUser = {
+            uid: 'demo-user-001',
+            email: 'demo@simcity2026.com',
+            displayName: 'Demo_Citizen',
+            emailVerified: true,
+        };
+        const demoMongoUser = {
+            _id: 'demo-user-001',
+            username: 'Demo_Citizen',
+            email: 'demo@simcity2026.com',
+            faction: 'Elves',
+            power: { economy: 75, military: 60, health: 80, infrastructure: 65 },
+            attacksLeft: 3,
+            helpLeft: 2,
+        };
+        setCurrentUser(demoFirebaseUser);
+        setMongoUser(demoMongoUser);
+        setIsDemo(true);
+        setLoading(false);
+    };
+
     const logout = async () => {
         localStorage.removeItem('token');
         setMongoUser(null);
         setCurrentUser(null);
-        await signOut(auth);
+        setIsDemo(false);
+        if (!isDemo) {
+            await signOut(auth);
+        }
         window.location.href = '/login';
     };
 
@@ -271,6 +297,8 @@ export const AuthProvider = ({ children }) => {
         signInWithLink,
         completeRegistration,
         logout,
+        demoLogin,
+        isDemo,
         resendVerification,
         fetchStats,
         loading,

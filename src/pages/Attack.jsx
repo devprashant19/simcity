@@ -10,7 +10,7 @@ const Attack = () => {
     const [status, setStatus] = useState('');
     const [warEnabled, setWarEnabled] = useState(false); // War State
     const { mongoUser, fetchStats } = useAuth();
-    const { power, setPower } = useGame();
+    const { power, setPower, isDemo } = useGame();
 
     // Confirmation Modal State
     const [confirmTarget, setConfirmTarget] = useState(null);
@@ -20,6 +20,20 @@ const Attack = () => {
         let isMounted = true;
 
         const fetchData = async () => {
+            // Demo mode: use mock data
+            if (isDemo) {
+                if (isMounted) {
+                    setWarEnabled(true);
+                    setTargets([
+                        { id: 'demo-t1', username: 'ShadowKnight', economy: 45, military: 72, infrastructure: 58, health: 63 },
+                        { id: 'demo-t2', username: 'IronFist_42', economy: 88, military: 35, infrastructure: 91, health: 50 },
+                        { id: 'demo-t3', username: 'NeonPhoenix', economy: 60, military: 55, infrastructure: 70, health: 85 },
+                    ]);
+                    setLoading(false);
+                }
+                return;
+            }
+
             try {
                 // 1. Check War Status
                 const warRes = await api.get('/war/status');
@@ -34,12 +48,10 @@ const Attack = () => {
                 }
 
                 // 2. Fetch Targets (Only if War is Active)
-                // Use /leaderboard/infrastructure for consistent target list
                 const res = await api.get('/leaderboard/infrastructure');
                 if (!isMounted) return;
 
                 const list = res.data.leaderboard || [];
-                // Filter out current user. Handle both id formats.
                 const currentId = mongoUser?._id || mongoUser?.id;
                 const filtered = list.filter(u => u.id !== currentId && u._id !== currentId);
                 setTargets(filtered);
@@ -50,18 +62,23 @@ const Attack = () => {
             }
         };
 
-        fetchData(); // Initial fetch
+        fetchData();
 
-        // Poll every 5 seconds for live updates
-        const intervalId = setInterval(fetchData, 5000);
+        // Poll every 5 seconds (skip in demo)
+        const intervalId = isDemo ? null : setInterval(fetchData, 5000);
 
         return () => {
             isMounted = false;
-            clearInterval(intervalId);
+            if (intervalId) clearInterval(intervalId);
         };
-    }, [mongoUser]);
+    }, [mongoUser, isDemo]);
 
     const initiateAttack = (user) => {
+        if (isDemo) {
+            setStatus('DEMO MODE: Sign up to launch real attacks!');
+            setTimeout(() => setStatus(''), 3000);
+            return;
+        }
         // Pre-check Military Power (Frontend)
         if (power.military < 5) {
             setStatus('ERROR: Insufficient Military Power (Need 5)');

@@ -16,7 +16,7 @@ import Shop from './pages/Shop';
 import HowToPlay from './pages/HowToPlay';
 
 const ProtectedRoute = ({ children }) => {
-  const { currentUser, mongoUser, loading } = useAuth();
+  const { currentUser, mongoUser, loading, isDemo } = useAuth();
 
   if (loading) return (
     <div className="flex flex-col items-center justify-center h-screen bg-borderland-dark text-borderland-red font-mono tracking-[0.5em] animate-pulse uppercase">
@@ -25,8 +25,8 @@ const ProtectedRoute = ({ children }) => {
     </div>
   );
 
-  // We require both Firebase Auth AND Backend Auth (which proves verification)
-  if (!currentUser || !mongoUser) {
+  // Allow demo users or fully authenticated users
+  if (!isDemo && (!currentUser || !mongoUser)) {
     return <Navigate to="/login" />;
   }
 
@@ -35,14 +35,14 @@ const ProtectedRoute = ({ children }) => {
 
 // NEW: Redirect logged-in users to /game
 const PublicRoute = ({ children }) => {
-  const { currentUser, mongoUser, loading } = useAuth();
+  const { currentUser, mongoUser, loading, isDemo } = useAuth();
 
   if (loading) {
-    return null; // Or a simple spinner, but null is fine for smooth redirect
+    return null;
   }
 
-  // If fully authenticated, redirect to game
-  if (currentUser && mongoUser) {
+  // If fully authenticated or in demo mode, redirect to game
+  if (isDemo || (currentUser && mongoUser)) {
     return <Navigate to="/game" replace />;
   }
 

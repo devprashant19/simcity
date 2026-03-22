@@ -10,7 +10,7 @@ const Help = () => {
     const [status, setStatus] = useState('');
     const [warEnabled, setWarEnabled] = useState(false); // War State
     const { mongoUser, fetchStats } = useAuth();
-    const { power, setPower } = useGame(); // Get power and setter from context
+    const { power, setPower, isDemo } = useGame();
 
     // Confirmation Modal State
     const [confirmTarget, setConfirmTarget] = useState(null);
@@ -20,26 +20,35 @@ const Help = () => {
         let isMounted = true;
 
         const fetchData = async () => {
+            // Demo mode: use mock data
+            if (isDemo) {
+                if (isMounted) {
+                    setWarEnabled(true);
+                    setTargets([
+                        { id: 'demo-a1', username: 'StarWeaver', economy: 30, military: 45, infrastructure: 55, health: 40 },
+                        { id: 'demo-a2', username: 'LunarGuard', economy: 22, military: 60, infrastructure: 48, health: 35 },
+                        { id: 'demo-a3', username: 'CrystalSage', economy: 50, military: 38, infrastructure: 42, health: 65 },
+                    ]);
+                    setLoading(false);
+                }
+                return;
+            }
+
             try {
-                // 1. Check War Status
                 const warRes = await api.get('/war/status');
                 const isWarActive = warRes.data.warEnabled;
 
                 if (isMounted) setWarEnabled(isWarActive);
 
-                // If War is OFF, stop here
                 if (!isWarActive) {
                     if (isMounted) setLoading(false);
                     return;
                 }
 
-                // 2. Fetch Targets (Only if War is Active)
-                // Use /leaderboard/infrastructure for consistent target list
                 const res = await api.get('/leaderboard/infrastructure');
                 if (!isMounted) return;
 
                 const list = res.data.leaderboard || [];
-                // Filter out current user
                 const currentId = mongoUser?._id || mongoUser?.id;
                 const filtered = list.filter(u => u.id !== currentId && u._id !== currentId);
                 setTargets(filtered);
@@ -51,16 +60,20 @@ const Help = () => {
         };
 
         fetchData();
-        // Poll every 5 seconds
-        const intervalId = setInterval(fetchData, 5000);
+        const intervalId = isDemo ? null : setInterval(fetchData, 5000);
 
         return () => {
             isMounted = false;
-            clearInterval(intervalId);
+            if (intervalId) clearInterval(intervalId);
         }
-    }, [mongoUser]);
+    }, [mongoUser, isDemo]);
 
     const initiateHelp = (user) => {
+        if (isDemo) {
+            setStatus('DEMO MODE: Sign up to send real aid!');
+            setTimeout(() => setStatus(''), 3000);
+            return;
+        }
         if (power.economy < 2) {
             setStatus('ERROR: Insufficient Economy (Need 2)');
             setTimeout(() => setStatus(''), 4000);

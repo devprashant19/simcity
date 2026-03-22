@@ -1,8 +1,12 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Map } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 const Home = () => {
+    const { demoLogin } = useAuth();
+    const navigate = useNavigate();
+
     return (
         <div className="flex flex-col items-center justify-center min-h-screen relative overflow-hidden px-4">
             {/* Decorative Background Glow */}
@@ -32,6 +36,16 @@ const Home = () => {
                 >
                     Choose Your Kingdom
                 </Link>
+
+                <div className="mt-4">
+                    <button
+                        onClick={() => { demoLogin(); navigate('/game'); }}
+                        className="inline-block w-full md:w-auto px-8 py-3 md:px-12 md:py-4 bg-transparent hover:bg-cyan-500/10 border border-cyan-500/30 hover:border-cyan-500 text-cyan-400 hover:text-cyan-300 text-sm md:text-base font-heading uppercase tracking-widest transition-all rounded-xl hover:-translate-y-1 active:scale-95"
+                    >
+                        Explore Demo
+                    </button>
+                    <p className="text-[10px] md:text-xs text-white/30 mt-2 font-mono uppercase tracking-wider">Preview features without an account</p>
+                </div>
             </div>
 
         </div>

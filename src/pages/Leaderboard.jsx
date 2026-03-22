@@ -6,13 +6,24 @@ import api from '../api';
 const Leaderboard = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
-    const { mongoUser } = useAuth();
+    const { mongoUser, isDemo } = useAuth();
 
     useEffect(() => {
+        if (isDemo) {
+            setUsers([
+                { id: 'demo-l1', username: 'IronFist_42', totalPower: 264 },
+                { id: 'demo-l2', username: 'NeonPhoenix', totalPower: 270 },
+                { id: 'demo-user-001', username: 'Demo_Citizen', totalPower: 280 },
+                { id: 'demo-l3', username: 'ShadowKnight', totalPower: 238 },
+                { id: 'demo-l4', username: 'CrystalSage', totalPower: 195 },
+            ].sort((a, b) => b.totalPower - a.totalPower));
+            setLoading(false);
+            return;
+        }
+
         const fetchLeaderboard = async () => {
             try {
                 const res = await api.get(`/leaderboard/infrastructure?_t=${new Date().getTime()}`);
-                // The backend returns all users sorted by infrastructure
                 setUsers(res.data.leaderboard || []);
             } catch (err) {
                 console.error("Failed to fetch leaderboard", err);
@@ -22,10 +33,9 @@ const Leaderboard = () => {
         };
 
         fetchLeaderboard();
-        // Optional: Poll every 30s
         const interval = setInterval(fetchLeaderboard, 30000);
         return () => clearInterval(interval);
-    }, []);
+    }, [isDemo]);
 
     if (loading) {
         return (
