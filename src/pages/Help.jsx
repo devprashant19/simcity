@@ -177,7 +177,7 @@ const Help = () => {
 
                         <h3 className="text-xl font-bold text-white mb-1 group-hover:text-green-500 transition-colors">{user.username}</h3>
                         <div className="text-xs font-mono text-white/40 mb-6 uppercase tracking-widest">
-                            ID: {user.id.substring(0, 8)}
+                            ID: {(user.id || user._id)?.substring(0, 8)}
                         </div>
 
                         <div className="grid grid-cols-2 gap-3 mb-6">

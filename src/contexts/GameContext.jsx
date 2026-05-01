@@ -98,7 +98,7 @@ export const GameProvider = ({ children }) => {
                 const savedPendingNext = localStorage.getItem(`${storageKey}_pendingNextQid`);
 
                 if (savedUnlockTime) setUnlockTime(parseInt(savedUnlockTime, 10));
-                if (savedLockedAnswer) setLockedAnswer(savedLockedAnswer);
+                if (savedLockedAnswer !== null) setLockedAnswer(parseInt(savedLockedAnswer, 10));
                 if (savedPendingNext) setPendingNextQid(savedPendingNext);
 
                 // 2. Load Core Data from Backend (Truth)
@@ -131,7 +131,7 @@ export const GameProvider = ({ children }) => {
         if (unlockTime) localStorage.setItem(`${storageKey}_unlockTime`, unlockTime);
         else localStorage.removeItem(`${storageKey}_unlockTime`);
 
-        if (lockedAnswer) localStorage.setItem(`${storageKey}_lockedAnswer`, lockedAnswer);
+        if (lockedAnswer !== null && lockedAnswer !== undefined) localStorage.setItem(`${storageKey}_lockedAnswer`, lockedAnswer);
         else localStorage.removeItem(`${storageKey}_lockedAnswer`);
 
         if (pendingNextQid) localStorage.setItem(`${storageKey}_pendingNextQid`, pendingNextQid);

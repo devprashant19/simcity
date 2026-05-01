@@ -26,7 +26,7 @@ const Game = () => {
             const diff = unlockTime - now;
             if (diff <= 0) {
                 setTimeLeft(0);
-                if (lockedAnswer) {
+                if (lockedAnswer !== null && lockedAnswer !== undefined) {
                     handleAnswer(lockedAnswer, true); // Auto-Proceed
                 }
             } else {

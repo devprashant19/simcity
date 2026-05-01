@@ -75,7 +75,7 @@ const Leaderboard = () => {
                                             <div className={`w-2 h-10 ${index === 0 ? 'bg-ochre' : 'bg-white/10'} rounded-full`}></div>
                                             <div>
                                                 <div className="text-lg font-bold text-white group-hover:text-ochre transition-colors">{user.username}</div>
-                                                <div className="text-[10px] font-mono text-white/30 uppercase tracking-widest">{user.id.substring(0, 6)}</div>
+                                                <div className="text-[10px] font-mono text-white/30 uppercase tracking-widest">{(user.id || user._id)?.substring(0, 6)}</div>
                                             </div>
                                         </div>
                                     </td>
