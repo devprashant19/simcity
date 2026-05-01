@@ -12,7 +12,6 @@ const Game = () => {
     const [selectedOption, setSelectedOption] = useState(null); // For Confirmation Modal
     const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [inputError, setInputError] = useState('');
-    const [inputSuccess, setInputSuccess] = useState(''); // "Correct, protocols engaging..."
 
     // Timer Effect
     useEffect(() => {
@@ -39,6 +38,7 @@ const Game = () => {
 
         const interval = setInterval(checkTimer, 1000);
         return () => clearInterval(interval);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [unlockTime, lockedAnswer]); // Added lockedAnswer dependency
 
     // Format Time Helper
@@ -77,7 +77,6 @@ const Game = () => {
                 // Determine if it was just locked (Timer started) or completed (No timer/ANY)
                 // If Timer Started, `unlockTime` will be set by context.
                 // We can show the success message.
-                setInputSuccess(result.message);
                 setAnswerInput('');
             }
         }
@@ -97,15 +96,6 @@ const Game = () => {
             handleAnswer(selectedOption, false, true);
             setShowConfirmModal(false);
             setSelectedOption(null);
-        }
-    };
-
-    // 4. Force Proceed (After Timer)
-    const handleProceed = () => {
-        if (timeLeft > 0) return; // Should be disabled anyway
-        if (lockedAnswer) {
-            handleAnswer(lockedAnswer, true); // Force Submit
-            setInputSuccess(''); // Clear any success msg
         }
     };
 

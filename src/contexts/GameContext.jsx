@@ -154,7 +154,7 @@ export const GameProvider = ({ children }) => {
         setUnlockTime(Date.now() + duration);
     };
 
-    const handleAnswer = async (answer, forceSubmit = false, isMCQConfirm = false) => {
+    const handleAnswer = async (answer, forceSubmit = false) => {
 
         // Demo mode: simulate answer with mock effects
         if (isDemo) {
@@ -240,7 +240,7 @@ export const GameProvider = ({ children }) => {
             console.log("[DEBUG] Submitting Answer:", payloadAnswer);
 
             const res = await api.post('/game/answer', { answer: payloadAnswer });
-            const { success, isCorrect, effects, nextQid, newPower, message } = res.data;
+            const { success, effects, nextQid, newPower, message } = res.data;
 
             if (!success) {
                 return { success: false, message: message || "Incorrect answer" };
@@ -320,7 +320,7 @@ export const GameProvider = ({ children }) => {
             setFaction(selectedFaction);
 
             // Fetch first question (backend logic ensures startQid if currentQuestion null)
-            const q = await fetchCurrentQuestion();
+            await fetchCurrentQuestion();
 
             setGameOver(false);
             setUnlockTime(null);

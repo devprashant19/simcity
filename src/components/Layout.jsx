@@ -4,6 +4,19 @@ import { useGame } from '../contexts/GameContext'; // Import context
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Map, User, Trophy, Sword, LogOut, Coins, Shield, Activity, Anchor, Heart, BookOpen, Home } from 'lucide-react';
 
+const StatusBarItem = ({ icon: Icon, value, color, label }) => (
+    <div className="flex flex-col items-center justify-center min-w-[80px] md:min-w-[100px] flex-1 border-r border-white/5 last:border-0 hover:bg-white/5 transition-colors duration-300 py-2">
+        <span className="text-[9px] md:text-[10px] font-mono text-white/40 uppercase tracking-[0.2em] mb-1">{label}</span>
+        <div className="flex items-center gap-2 md:gap-3">
+            <Icon size={16} className={`${color} opacity-80 md:w-5 md:h-5`} />
+            <span className={`text-2xl md:text-3xl font-heading font-black tracking-tight text-white drop-shadow-md`}>
+                {value}
+            </span>
+        </div>
+    </div>
+);
+
+
 const Layout = ({ children }) => {
     const { currentUser, mongoUser, logout, isDemo } = useAuth();
     const { power, faction } = useGame();
@@ -40,18 +53,6 @@ const Layout = ({ children }) => {
 
         return `url("/${base}${suffix}")`;
     };
-
-    const StatusBarItem = ({ icon: Icon, value, color, label }) => (
-        <div className="flex flex-col items-center justify-center min-w-[80px] md:min-w-[100px] flex-1 border-r border-white/5 last:border-0 hover:bg-white/5 transition-colors duration-300 py-2">
-            <span className="text-[9px] md:text-[10px] font-mono text-white/40 uppercase tracking-[0.2em] mb-1">{label}</span>
-            <div className="flex items-center gap-2 md:gap-3">
-                <Icon size={16} className={`${color} opacity-80 md:w-5 md:h-5`} />
-                <span className={`text-2xl md:text-3xl font-heading font-black tracking-tight text-white drop-shadow-md`}>
-                    {value}
-                </span>
-            </div>
-        </div>
-    );
 
     const isHomePage = location.pathname === '/';
 
