@@ -6,7 +6,7 @@ import api from '../api';
 const Leaderboard = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
-    const { mongoUser, isDemo } = useAuth();
+    const { isDemo } = useAuth();
 
     useEffect(() => {
         if (isDemo) {

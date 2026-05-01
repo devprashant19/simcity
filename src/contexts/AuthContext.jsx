@@ -82,7 +82,6 @@ export const AuthProvider = ({ children }) => {
                 return 'Connection interrupted. Check your network status.';
             case 'auth/too-many-requests':
                 return 'Too many attempts. Access temporarily locked.';
-                return 'Too many attempts. Access temporarily locked.';
             case 'auth/requires-recent-login':
                 return 'Session expired. Please re-authenticate.';
             default:
