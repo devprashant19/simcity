@@ -100,7 +100,7 @@ const Help = () => {
             }));
 
             // Call Backend
-            const res = await api.post('/power/aid', { targetId });
+            const res = await api.post('/point/aid', { targetId });
 
             // Customized Success Message with Remaining Count
             const helpLeft = res.data.helpLeft;
