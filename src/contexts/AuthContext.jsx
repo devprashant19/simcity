@@ -34,7 +34,9 @@ export const AuthProvider = ({ children }) => {
         }
 
         try {
+            const idToken = await firebaseUser.getIdToken();
             const payload = {
+                idToken,
                 firebaseUid: firebaseUser.uid,
                 email: firebaseUser.email,
                 username: firebaseUser.displayName || firebaseUser.email.split('@')[0], // Fallback username
@@ -161,7 +163,9 @@ export const AuthProvider = ({ children }) => {
             await updatePassword(user, password);
 
             // 2. Sync with Backend
+            const idToken = await user.getIdToken();
             const payload = {
+                idToken,
                 firebaseUid: user.uid,
                 email: user.email,
                 username: username,
@@ -196,7 +200,9 @@ export const AuthProvider = ({ children }) => {
             // Send Verification Email
             await sendEmailVerification(cred.user);
 
+            const idToken = await cred.user.getIdToken();
             const payload = {
+                idToken,
                 firebaseUid: cred.user.uid,
                 email,
                 username,
