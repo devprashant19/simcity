@@ -229,8 +229,18 @@ export const AuthProvider = ({ children }) => {
     };
 
     const fetchStats = async () => {
+        if (isDemo) return;
         if (currentUser) {
-            await syncWithBackend(currentUser);
+            try {
+                const res = await api.get('/point/me');
+                if (res.data) {
+                    setMongoUser(prev => ({ ...prev, ...res.data }));
+                }
+            } catch (err) {
+                console.error("Fetch Stats Error:", err);
+                // Fallback to full sync on error
+                await syncWithBackend(currentUser);
+            }
         }
     };
 
