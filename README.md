@@ -11,7 +11,7 @@ Welcome to **SimCity**, a full-stack strategy game where players build their emp
 *   **🛡️ War State Control**: Global war state that can be enabled/disabled by admins.
 *   **🏆 Leaderboard**: Real-time rankings to see who dominates the server.
 *   **🛒 Shop**: Buy upgrades and items to boost your progress.
-*   **📖 dynamic Help**: Interactive "How to Play" and "Help" guides.
+*   **📖 Dynamic Help**: Interactive "How to Play" and "Help" guides.
 
 ---
 
