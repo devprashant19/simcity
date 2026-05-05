@@ -80,8 +80,8 @@ const Attack = () => {
             return;
         }
         // Pre-check Military Power (Frontend)
-        if (power.military < 5) {
-            setStatus('ERROR: Insufficient Military Power (Need 5)');
+        if (power.military < 10) {
+            setStatus('ERROR: Insufficient Military Power (Need 10)');
             setTimeout(() => setStatus(''), 4000);
             return;
         }
@@ -101,7 +101,7 @@ const Attack = () => {
             // Optimistic Update: Immediately reflect damage on target in UI
             setTargets(prev => prev.map(u => {
                 if (u.id === defenderId) {
-                    return { ...u, infrastructure: Math.max(0, (u.infrastructure || 0) - 3) };
+                    return { ...u, infrastructure: Math.max(0, (u.infrastructure || 0) - 4) };
                 }
                 return u;
             }));
@@ -118,8 +118,8 @@ const Attack = () => {
             } else {
                 setPower(prev => ({
                     ...prev,
-                    military: prev.military - 2,
-                    economy: prev.economy + 1
+                    military: prev.military - 5,
+                    economy: prev.economy + 8
                 }));
             }
 
