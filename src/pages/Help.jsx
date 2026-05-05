@@ -91,10 +91,10 @@ const Help = () => {
         try {
             setStatus('SENDING_AID...');
 
-            // Optimistic Update: Immediately reflect +1 Economy on target
+            // Optimistic Update: Immediately reflect +8 Economy on target
             setTargets(prev => prev.map(u => {
                 if (u.id === targetId) {
-                    return { ...u, economy: (u.economy || 0) + 1 };
+                    return { ...u, economy: (u.economy || 0) + 8 };
                 }
                 return u;
             }));
