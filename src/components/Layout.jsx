@@ -3,6 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useGame } from '../contexts/GameContext'; // Import context
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Map, User, Trophy, Sword, LogOut, Coins, Shield, Activity, Anchor, Heart, BookOpen, Home } from 'lucide-react';
+import CityAdvisor from './CityAdvisor';
 
 const StatusBarItem = ({ icon: Icon, value, color, label }) => (
     <div className="flex flex-col items-center justify-center min-w-[80px] md:min-w-[100px] flex-1 border-r border-white/5 last:border-0 hover:bg-white/5 transition-colors duration-300 py-2">
@@ -218,6 +219,10 @@ const Layout = ({ children }) => {
                     </div>
                 </div>
                 </>
+            )}
+
+            {!isHomePage && ((currentUser && mongoUser) || isDemo) && (
+                <CityAdvisor />
             )}
         </div>
     );
